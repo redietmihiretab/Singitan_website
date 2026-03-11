@@ -1,0 +1,89 @@
+@import '@fontsource/poppins/300.css';
+@import '@fontsource/poppins/400.css';
+@import '@fontsource/poppins/500.css';
+@import '@fontsource/poppins/600.css';
+@import '@fontsource/poppins/700.css';
+@import '@fontsource/poppins/800.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    @apply bg-white text-black transition-colors duration-500 ease-in-out;
+  }
+
+  .dark body {
+    @apply bg-black text-fontwhite;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@layer components {
+  .section-container {
+    @apply max-w-7xl mx-auto px-6 lg:px-10;
+  }
+
+  .section-title {
+    @apply text-3xl font-normal text-dark dark:text-fontwhite relative inline-block mb-6 transition-colors duration-500;
+  }
+
+  .section-title::after {
+    content: '';
+    @apply absolute -bottom-2 left-0 w-12 h-1 bg-primary rounded shadow-[0_0_10px_#f7931e];
+  }
+
+  .btn-primary {
+    @apply inline-block px-9 py-3.5 bg-lightblack dark:bg-white/10 dark:backdrop-blur-sm text-fontwhite font-semibold text-lg rounded-xl
+           transition-all duration-300 hover:bg-primary hover:shadow-[0_0_20px_rgba(247,147,30,0.4)] cursor-pointer no-underline border border-transparent dark:border-white/10;
+  }
+
+  .btn-secondary {
+    @apply inline-block px-8 py-3 border border-secondary text-dark dark:text-fontwhite font-semibold
+           rounded-xl transition-all duration-300 hover:bg-primary hover:text-white hover:border-primary hover:shadow-[0_0_20px_rgba(247,147,30,0.4)] cursor-pointer no-underline;
+  }
+
+  .card-shadow {
+    @apply shadow-[0_10px_30px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)];
+  }
+
+  .card-shadow-hover {
+    @apply hover:shadow-[0_15px_40px_rgba(0,0,0,0.25)] hover:-translate-y-2 dark:hover:shadow-[0_10px_40px_rgba(247,147,30,0.2)] transition-all duration-300;
+  }
+
+  .glass-card {
+    @apply bg-white dark:bg-white/5 backdrop-blur-md border border-gray-100 dark:border-white/10 rounded-2xl;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Loader */
+.loader-container {
+  @apply fixed inset-0 bg-white flex items-center justify-center z-[9999];
+  transition: opacity 0.8s ease;
+}
+
+.loader-container.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
