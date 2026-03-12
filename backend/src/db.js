@@ -7,13 +7,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataDir = path.join(__dirname, 'data');
+const dataDir = process.env.DATA_DIR || path.join(__dirname, 'data');
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
 const dbPath = path.join(dataDir, 'database.sqlite');
-const CONTENT_PATH = path.join(dataDir, 'content.json');
+const CONTENT_PATH = path.join(__dirname, 'data', 'content.json');
 
 const db = new Database(dbPath);
 
