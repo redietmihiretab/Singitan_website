@@ -22,7 +22,7 @@ export default function CTA({ data }) {
         className="section-container relative z-10 text-center"
       >
         <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
-          {data.headline} <span className="text-primary bg-white px-3 py-1 rounded-lg ml-2">{data.headlineAccent}</span>
+          {data.headline} <span className="text-black ml-2">{data.headlineAccent}</span>
         </h2>
         <p className="text-white/90 text-sm md:text-base max-w-2xl mx-auto mb-10 leading-relaxed">
           {data.subtext}

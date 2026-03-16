@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { LogOut, Save, LayoutDashboard, Loader2, Sun, Moon, X, Eye, EyeOff, Bell, CheckCircle, Check, Inbox } from 'lucide-react';
+import { LogOut, Save, LayoutDashboard, Loader2, Sun, Moon, X, Eye, EyeOff, Bell, CheckCircle, Check, Inbox, Image as ImageIcon, Home, Info, Briefcase, BarChart3, FolderGit2, MessageSquare, Link as LinkIcon, Users } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import ImageUpload from '../../components/ImageUpload';
 
@@ -13,7 +13,7 @@ export default function AdminDashboard() {
   const [status, setStatus] = useState(null);
   const [submissions, setSubmissions] = useState([]);
   const [submissionsLoading, setSubmissionsLoading] = useState(false);
-const [submissionsError, setSubmissionsError] = useState(null);
+  const [submissionsError, setSubmissionsError] = useState(null);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showInbox, setShowInbox] = useState(false);
   const [inboxFilter, setInboxFilter] = useState('all'); // 'all', 'unhandled', 'handled'
@@ -23,6 +23,8 @@ const [submissionsError, setSubmissionsError] = useState(null);
   const [updatingCreds, setUpdatingCreds] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
+  const [activeTab, setActiveTab] = useState('logos');
+
   const navigate = useNavigate();
   const { isDarkMode, toggleTheme } = useTheme();
   const [passFeedback, setPassFeedback] = useState({
@@ -231,6 +233,13 @@ const refreshSubmissions = async () => {
     });
   };
 
+  const addStat = () => {
+    setData(prev => ({
+      ...prev,
+      stats: [...(prev.stats || []), { id: Date.now(), value: '0', label: 'New Stat' }]
+    }));
+  };
+
   const addService = () => {
     setData(prev => ({
       ...prev,
@@ -369,6 +378,19 @@ const refreshSubmissions = async () => {
     updateArrayItem('projects', index, 'tags', tagsArray);
   };
 
+  const TABS = [
+    { id: 'logos', label: 'Site Logos', icon: ImageIcon },
+    { id: 'hero', label: 'Hero Section', icon: Home },
+    { id: 'about', label: 'About Section', icon: Info },
+    { id: 'services', label: 'Services', icon: Briefcase },
+    { id: 'stats', label: 'Company Stats', icon: BarChart3 },
+    { id: 'projects', label: 'Projects', icon: FolderGit2 },
+    { id: 'testimonials', label: 'Testimonials', icon: MessageSquare },
+    { id: 'cta', label: 'Call to Action', icon: LinkIcon },
+    { id: 'contact', label: 'Contact/Footer', icon: LayoutDashboard },
+    { id: 'partners', label: 'Partners', icon: Users },
+  ];
+
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black transition-colors duration-500">
       <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -479,376 +501,471 @@ const refreshSubmissions = async () => {
       )}
 
       {/* Editor Content */}
-      <main className="max-w-4xl mx-auto px-6 mt-8 space-y-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pt-8 flex flex-col lg:flex-row gap-8 items-start">
+        {/* Sidebar Tabs */}
+        <aside className="w-full lg:w-64 flex-shrink-0 lg:sticky lg:top-24 bg-white dark:bg-white/5 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-white/10 transition-colors duration-500 overflow-x-auto lg:overflow-visible flex lg:flex-col gap-2 scrollbar-hide">
+          {TABS.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                  isActive
+                    ? 'bg-primary text-white shadow-md'
+                    : 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-white/10'
+                }`}
+              >
+                <Icon size={18} />
+                {tab.label}
+              </button>
+            );
+          })}
+        </aside>
 
+        {/* Dynamic Content Area */}
+        <main className="flex-1 w-full space-y-8 min-w-0 pb-12">
+          
+          {activeTab === 'logos' && (
+            <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-colors duration-500 animate-in fade-in slide-in-from-bottom-4 duration-300">
+              <h2 className="text-lg font-semibold text-secondary dark:text-primary mb-6 border-b border-gray-100 dark:border-white/10 pb-2">Site Logos</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <ImageUpload
+                  label="Horizontal Logo (Dark Theme - Light Version)"
+                  value={data.logos?.light || '/images/logo_horizontal_light.svg'}
+                  onChange={val => setData(prev => ({ ...prev, logos: { ...prev.logos, light: val } }))}
+                />
+                <ImageUpload
+                  label="Horizontal Logo (Light Theme - Dark Version)"
+                  value={data.logos?.dark || '/images/logo_horizontal.svg'}
+                  onChange={val => setData(prev => ({ ...prev, logos: { ...prev.logos, dark: val } }))}
+                />
+              </div>
+            </section>
+          )}
 
+          {activeTab === 'hero' && (
+            <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 duration-300">
+              <h2 className="text-lg font-semibold text-secondary dark:text-primary mb-6 border-b border-gray-100 dark:border-white/10 pb-2">Hero Section</h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Headline Part 1</label>
+                  <input type="text" value={data.hero.headline} onChange={e => updateField('hero', 'headline', e.target.value)}
+                    className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-dark dark:text-fontwhite transition-colors duration-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Headline Part 2 (Orange)</label>
+                  <input type="text" value={data.hero.headlineHighlight} onChange={e => updateField('hero', 'headlineHighlight', e.target.value)}
+                    className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-dark dark:text-fontwhite transition-colors duration-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Subtext</label>
+                  <textarea value={data.hero.subtext} onChange={e => updateField('hero', 'subtext', e.target.value)} rows={3}
+                    className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-dark dark:text-fontwhite transition-colors duration-500" />
+                </div>
+                <ImageUpload
+                  label="Hero Image"
+                  value={data.hero.image || '/images/hero.png'}
+                  onChange={val => updateField('hero', 'image', val)}
+                />
+              </div>
+            </section>
+          )}
 
-        <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-colors duration-500">
-          <h2 className="text-lg font-semibold text-secondary dark:text-primary mb-6 border-b border-gray-100 dark:border-white/10 pb-2">Site Logos</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <ImageUpload
-              label="Horizontal Logo (Dark Theme - Light Version)"
-              value={data.logos?.light || '/images/logo_horizontal_light.svg'}
-              onChange={val => setData(prev => ({ ...prev, logos: { ...prev.logos, light: val } }))}
-            />
-            <ImageUpload
-              label="Horizontal Logo (Light Theme - Dark Version)"
-              value={data.logos?.dark || '/images/logo_horizontal.svg'}
-              onChange={val => setData(prev => ({ ...prev, logos: { ...prev.logos, dark: val } }))}
-            />
-          </div>
-        </section>
+          {activeTab === 'about' && (
+            <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 duration-300">
+              <h2 className="text-lg font-semibold text-secondary dark:text-primary mb-6 border-b border-gray-100 dark:border-white/10 pb-2">About Section</h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Heading</label>
+                  <input type="text" value={data.about.heading} onChange={e => updateField('about', 'heading', e.target.value)}
+                    className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-dark dark:text-fontwhite transition-colors duration-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Body Text</label>
+                  <textarea value={data.about.body} onChange={e => updateField('about', 'body', e.target.value)} rows={6}
+                    className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-dark dark:text-fontwhite transition-colors duration-500" />
+                </div>
+                <ImageUpload
+                  label="About Image"
+                  value={data.about.image || '/images/m.jpg'}
+                  onChange={val => updateField('about', 'image', val)}
+                />
+              </div>
+            </section>
+          )}
 
-        <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500">
-          <h2 className="text-lg font-semibold text-secondary dark:text-primary mb-6 border-b border-gray-100 dark:border-white/10 pb-2">Hero Section</h2>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Headline Part 1</label>
-              <input type="text" value={data.hero.headline} onChange={e => updateField('hero', 'headline', e.target.value)}
-                className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-dark dark:text-fontwhite transition-colors duration-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Headline Part 2 (Orange)</label>
-              <input type="text" value={data.hero.headlineHighlight} onChange={e => updateField('hero', 'headlineHighlight', e.target.value)}
-                className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-dark dark:text-fontwhite transition-colors duration-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Subtext</label>
-              <textarea value={data.hero.subtext} onChange={e => updateField('hero', 'subtext', e.target.value)} rows={3}
-                className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-dark dark:text-fontwhite transition-colors duration-500" />
-            </div>
-            <ImageUpload
-              label="Hero Image"
-              value={data.hero.image || '/images/hero.png'}
-              onChange={val => updateField('hero', 'image', val)}
-            />
-          </div>
-        </section>
+          {activeTab === 'services' && (
+            <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 duration-300">
+              <div className="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-white/10 pb-2">
+                <h2 className="text-lg font-semibold text-secondary dark:text-primary">Services</h2>
+                <button onClick={addService} className="text-sm bg-primary/5 hover:bg-primary/10 text-dark dark:text-fontwhite px-3 py-1.5 rounded-md font-medium transition-colors">
+                  + Add Service
+                </button>
+              </div>
+              <div className="space-y-12">
+                {data.services.map((svc, idx) => (
+                  <div key={svc.id} className="p-6 border border-gray-200 dark:border-white/10 rounded-2xl relative bg-white dark:bg-white/5 transition-colors duration-500 shadow-sm">
+                    <button
+                      onClick={() => removeArrayItem('services', idx)}
+                      className="absolute top-4 right-4 text-red-500 hover:text-red-700 font-semibold text-sm p-2"
+                    >Remove</button>
+                    
+                    <div className="grid grid-cols-1 gap-6 mt-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Service Title</label>
+                          <input type="text" value={svc.title} onChange={e => updateArrayItem('services', idx, 'title', e.target.value)}
+                            className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                        </div>
+                        <div>
+                          <ImageUpload
+                            label="Main Image (Carousel & Header)"
+                            value={svc.image}
+                            onChange={val => updateArrayItem('services', idx, 'image', val)}
+                          />
+                        </div>
+                      </div>
 
-        <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500">
-          <h2 className="text-lg font-semibold text-secondary dark:text-primary mb-6 border-b border-gray-100 dark:border-white/10 pb-2">About Section</h2>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Heading</label>
-              <input type="text" value={data.about.heading} onChange={e => updateField('about', 'heading', e.target.value)}
-                className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-dark dark:text-fontwhite transition-colors duration-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Body Text</label>
-              <textarea value={data.about.body} onChange={e => updateField('about', 'body', e.target.value)} rows={6}
-                className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-dark dark:text-fontwhite transition-colors duration-500" />
-            </div>
-            <ImageUpload
-              label="About Image"
-              value={data.about.image || '/images/m.jpg'}
-              onChange={val => updateField('about', 'image', val)}
-            />
-          </div>
-        </section>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Short Description (for Carousel)</label>
+                        <textarea value={svc.description} onChange={e => updateArrayItem('services', idx, 'description', e.target.value)} rows={2}
+                          className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                      </div>
 
-        <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500">
-          <div className="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-white/10 pb-2">
-            <h2 className="text-lg font-semibold text-secondary dark:text-primary">Services</h2>
-            <button onClick={addService} className="text-sm bg-primary/5 hover:bg-primary/10 text-dark dark:text-fontwhite px-3 py-1.5 rounded-md font-medium transition-colors">
-              + Add Service
-            </button>
-          </div>
-          <div className="space-y-12">
-            {data.services.map((svc, idx) => (
-              <div key={svc.id} className="p-6 border border-gray-200 dark:border-white/10 rounded-2xl relative bg-white dark:bg-white/5 transition-colors duration-500 shadow-sm">
-                <button
-                  onClick={() => removeArrayItem('services', idx)}
-                  className="absolute top-4 right-4 text-red-500 hover:text-red-700 font-semibold text-sm p-2"
-                >Remove</button>
-                
-                <div className="grid grid-cols-1 gap-6 mt-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Service Title</label>
-                      <input type="text" value={svc.title} onChange={e => updateArrayItem('services', idx, 'title', e.target.value)}
-                        className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                      <div className="border-t border-gray-100 dark:border-white/10 pt-6">
+                        <h3 className="text-md font-semibold text-secondary dark:text-primary mb-4">Detailed Content (Service Page)</h3>
+                        
+                        <div className="space-y-4">
+                          {[0, 1, 2].map(pIdx => (
+                            <div key={pIdx}>
+                              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Paragraph {pIdx + 1}</label>
+                              <textarea 
+                                value={svc.paragraphs ? svc.paragraphs[pIdx] : ''} 
+                                onChange={e => updateServiceParagraph(idx, pIdx, e.target.value)} 
+                                rows={4}
+                                className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" 
+                                placeholder={`Detailed paragraph ${pIdx + 1}...`}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="border-t border-gray-100 dark:border-white/10 pt-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-md font-semibold text-secondary dark:text-primary">Bullet Points</h3>
+                          <button onClick={() => addServiceBullet(idx)} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded hover:bg-primary/20 transition-colors">
+                            + Add Bullet
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {(svc.bullets || []).map((bullet, bIdx) => (
+                            <div key={bIdx} className="flex gap-2">
+                              <input 
+                                type="text" 
+                                value={bullet} 
+                                onChange={e => updateServiceBullet(idx, bIdx, e.target.value)}
+                                className="flex-1 p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-xs text-dark dark:text-fontwhite"
+                              />
+                              <button onClick={() => removeServiceBullet(idx, bIdx)} className="text-red-400 hover:text-red-600 px-1">✕</button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="border-t border-gray-100 dark:border-white/10 pt-6">
+                        <h3 className="text-md font-semibold text-secondary dark:text-primary mb-4">Additional Images (Gallery)</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          {[0, 1, 2].map(imgIdx => (
+                            <ImageUpload
+                              key={imgIdx}
+                              label={`Image ${imgIdx + 1}`}
+                              value={svc.additionalImages ? svc.additionalImages[imgIdx] : ''}
+                              onChange={val => updateServiceAdditionalImage(idx, imgIdx, val)}
+                            />
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                    <div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {activeTab === 'stats' && (
+            <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 duration-300">
+              <div className="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-white/10 pb-2">
+                <h2 className="text-lg font-semibold text-secondary dark:text-primary">Company Stats</h2>
+                <button onClick={addStat} className="text-sm bg-primary/5 hover:bg-primary/10 text-dark dark:text-fontwhite px-3 py-1.5 rounded-md font-medium transition-colors">
+                  + Add Stat
+                </button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                {(data.stats || []).map((stat, idx) => (
+                  <div key={stat.id} className="p-4 border border-gray-200 dark:border-white/10 rounded-xl relative bg-white dark:bg-white/5 transition-colors duration-500">
+                    <button
+                      onClick={() => removeArrayItem('stats', idx)}
+                      className="absolute top-2 right-2 text-red-500 hover:text-red-700 font-semibold text-xs"
+                    >Remove</button>
+                    <div className="space-y-3 mt-4">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Value (e.g. 10+)</label>
+                        <input type="text" value={stat.value} onChange={e => updateArrayItem('stats', idx, 'value', e.target.value)}
+                          className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Label</label>
+                        <input type="text" value={stat.label} onChange={e => updateArrayItem('stats', idx, 'label', e.target.value)}
+                          className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {activeTab === 'projects' && (
+            <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 duration-300">
+              <div className="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-white/10 pb-2">
+                <h2 className="text-lg font-semibold text-secondary dark:text-primary">Projects</h2>
+                <button onClick={addProject} className="text-sm bg-primary/5 hover:bg-primary/10 text-dark dark:text-fontwhite px-3 py-1.5 rounded-md font-medium transition-colors">
+                  + Add Project
+                </button>
+              </div>
+              <div className="space-y-8">
+                {data.projects.map((proj, idx) => (
+                  <div key={proj.id} className="p-4 border border-gray-200 dark:border-white/10 rounded-xl relative bg-white dark:bg-white/5 transition-colors duration-500">
+                    <button
+                      onClick={() => removeArrayItem('projects', idx)}
+                      className="absolute top-4 right-4 text-red-500 hover:text-red-700 font-semibold text-sm"
+                    >Remove</button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
+                        <input type="text" value={proj.title} onChange={e => updateArrayItem('projects', idx, 'title', e.target.value)}
+                          className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                      </div>
+                      <div className="md:col-span-2">
+                        <ImageUpload
+                          label="Project Image"
+                          value={proj.image || ''}
+                          onChange={val => updateArrayItem('projects', idx, 'image', val)}
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tags (Comma separated)</label>
+                        <input type="text" value={proj.tags?.join(', ')} onChange={e => updateTags(idx, e.target.value)}
+                          className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+                        <textarea value={proj.description} onChange={e => updateArrayItem('projects', idx, 'description', e.target.value)} rows={2}
+                          className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                      </div>
+
+                      {/* Project Details */}
+                      <div className="md:col-span-2 border-t border-gray-100 dark:border-white/10 pt-4 mt-2">
+                        <h3 className="text-sm font-semibold text-secondary dark:text-primary mb-3">Project Page Content</h3>
+                        
+                        <div className="space-y-3 mb-4">
+                          {[0, 1, 2].map(pIdx => (
+                            <div key={pIdx}>
+                              <label className="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-0.5">Paragraph {pIdx + 1}</label>
+                              <textarea 
+                                value={proj.paragraphs ? proj.paragraphs[pIdx] : ''} 
+                                onChange={e => updateProjectParagraph(idx, pIdx, e.target.value)} 
+                                rows={3}
+                                className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-xs text-dark dark:text-fontwhite transition-colors duration-500" 
+                                placeholder={`Detailed paragraph ${pIdx + 1}...`}
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="mb-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Highlights / Bullets</label>
+                            <button onClick={() => addProjectBullet(idx)} className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded hover:bg-primary/20 transition-colors">
+                              + Add
+                            </button>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            {(proj.bullets || []).map((bullet, bIdx) => (
+                              <div key={bIdx} className="flex gap-1">
+                                <input 
+                                  type="text" 
+                                  value={bullet} 
+                                  onChange={e => updateProjectBullet(idx, bIdx, e.target.value)}
+                                  className="flex-1 p-1.5 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-[11px] text-dark dark:text-fontwhite"
+                                />
+                                <button onClick={() => removeProjectBullet(idx, bIdx)} className="text-red-400 hover:text-red-600 px-1 text-xs">✕</button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="text-xs font-medium text-gray-500 dark:text-gray-400 block mb-2">Gallery Images</label>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            {[0, 1, 2].map(imgIdx => (
+                              <ImageUpload
+                                key={imgIdx}
+                                label={`Image ${imgIdx + 1}`}
+                                value={proj.additionalImages ? proj.additionalImages[imgIdx] : ''}
+                                onChange={val => updateProjectAdditionalImage(idx, imgIdx, val)}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {activeTab === 'testimonials' && (
+            <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 duration-300">
+              <div className="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-white/10 pb-2">
+                <h2 className="text-lg font-semibold text-secondary dark:text-primary">Testimonials</h2>
+                <button onClick={addTestimonial} className="text-sm bg-primary/5 hover:bg-primary/10 text-dark dark:text-fontwhite px-3 py-1.5 rounded-md font-medium transition-colors">
+                  + Add Testimonial
+                </button>
+              </div>
+              <div className="space-y-8">
+                {data.testimonials.map((test, idx) => (
+                  <div key={test.id} className="p-4 border border-gray-200 dark:border-white/10 rounded-xl relative bg-white dark:bg-white/5 transition-colors duration-500">
+                    <button
+                      onClick={() => removeArrayItem('testimonials', idx)}
+                      className="absolute top-4 right-4 text-red-500 hover:text-red-700 font-semibold text-sm"
+                    >Remove</button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+                        <input type="text" value={test.name} onChange={e => updateArrayItem('testimonials', idx, 'name', e.target.value)}
+                          className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Position</label>
+                        <input type="text" value={test.position} onChange={e => updateArrayItem('testimonials', idx, 'position', e.target.value)}
+                          className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                      </div>
+                      <div className="md:col-span-2">
+                        <ImageUpload
+                          label="Client Photo"
+                          value={test.photo}
+                          onChange={val => updateArrayItem('testimonials', idx, 'photo', val)}
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Quote</label>
+                        <textarea value={test.quote} onChange={e => updateArrayItem('testimonials', idx, 'quote', e.target.value)} rows={3}
+                          className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {activeTab === 'cta' && (
+            <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 duration-300">
+              <h2 className="text-lg font-semibold text-secondary dark:text-primary mb-6 border-b border-gray-100 dark:border-white/10 pb-2">Call to Action (CTA)</h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Headline Part 1</label>
+                  <input type="text" value={data.cta?.headline || ''} onChange={e => updateField('cta', 'headline', e.target.value)}
+                    className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-dark dark:text-fontwhite transition-colors duration-500 outline-none focus:border-primary" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Headline Part 2 (Dark Text)</label>
+                  <input type="text" value={data.cta?.headlineAccent || ''} onChange={e => updateField('cta', 'headlineAccent', e.target.value)}
+                    className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-dark dark:text-fontwhite transition-colors duration-500 outline-none focus:border-primary" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Subtext</label>
+                  <textarea value={data.cta?.subtext || ''} onChange={e => updateField('cta', 'subtext', e.target.value)} rows={3}
+                    className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-dark dark:text-fontwhite transition-colors duration-500 outline-none focus:border-primary" />
+                </div>
+              </div>
+            </section>
+          )}
+
+          {activeTab === 'contact' && (
+            <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 duration-300">
+              <h2 className="text-lg font-semibold text-secondary dark:text-primary mb-6 border-b border-gray-100 dark:border-white/10 pb-2">Contact Details Footer</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone 1</label>
+                  <input type="text" value={data.contact.phone1} onChange={e => updateField('contact', 'phone1', e.target.value)}
+                    className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-dark dark:text-fontwhite transition-colors duration-500 outline-none focus:border-primary" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone 2</label>
+                  <input type="text" value={data.contact.phone2} onChange={e => updateField('contact', 'phone2', e.target.value)}
+                    className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-dark dark:text-fontwhite transition-colors duration-500 outline-none focus:border-primary" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                  <input type="text" value={data.contact.email} onChange={e => updateField('contact', 'email', e.target.value)}
+                    className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-dark dark:text-fontwhite transition-colors duration-500 outline-none focus:border-primary" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address</label>
+                  <input type="text" value={data.contact.address} onChange={e => updateField('contact', 'address', e.target.value)}
+                    className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-dark dark:text-fontwhite transition-colors duration-500 outline-none focus:border-primary" />
+                </div>
+              </div>
+            </section>
+          )}
+
+          {activeTab === 'partners' && (
+            <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 duration-300">
+              <div className="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-white/10 pb-2">
+                <h2 className="text-lg font-semibold text-secondary dark:text-primary">Technology Partners</h2>
+                <button
+                  onClick={() => {
+                    setData(prev => ({
+                      ...prev,
+                      partners: [...prev.partners, { id: Date.now(), name: 'New Partner', logo: '' }]
+                    }));
+                  }}
+                  className="text-sm bg-primary/5 hover:bg-primary/10 text-dark dark:text-fontwhite px-3 py-1.5 rounded-md font-medium transition-colors"
+                >
+                  + Add Partner
+                </button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {data.partners.map((p, idx) => (
+                  <div key={p.id} className="p-4 border border-gray-200 dark:border-white/10 rounded-xl relative bg-white dark:bg-white/5 transition-colors duration-500">
+                    <button
+                      onClick={() => removeArrayItem('partners', idx)}
+                      className="absolute top-2 right-2 text-red-500 hover:text-red-700 font-semibold text-xs transition-colors"
+                    >Remove</button>
+                    <div className="space-y-3">
+                      <input
+                        type="text" value={p.name} onChange={e => updateArrayItem('partners', idx, 'name', e.target.value)}
+                        placeholder="Partner Name"
+                        className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500"
+                      />
                       <ImageUpload
-                        label="Main Image (Carousel & Header)"
-                        value={svc.image}
-                        onChange={val => updateArrayItem('services', idx, 'image', val)}
+                        value={p.logo}
+                        onChange={val => updateArrayItem('partners', idx, 'logo', val)}
                       />
                     </div>
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Short Description (for Carousel)</label>
-                    <textarea value={svc.description} onChange={e => updateArrayItem('services', idx, 'description', e.target.value)} rows={2}
-                      className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
-                  </div>
-
-                  <div className="border-t border-gray-100 dark:border-white/10 pt-6">
-                    <h3 className="text-md font-semibold text-secondary dark:text-primary mb-4">Detailed Content (Service Page)</h3>
-                    
-                    <div className="space-y-4">
-                      {[0, 1, 2].map(pIdx => (
-                        <div key={pIdx}>
-                          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Paragraph {pIdx + 1}</label>
-                          <textarea 
-                            value={svc.paragraphs ? svc.paragraphs[pIdx] : ''} 
-                            onChange={e => updateServiceParagraph(idx, pIdx, e.target.value)} 
-                            rows={4}
-                            className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" 
-                            placeholder={`Detailed paragraph ${pIdx + 1}...`}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="border-t border-gray-100 dark:border-white/10 pt-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-md font-semibold text-secondary dark:text-primary">Bullet Points</h3>
-                      <button onClick={() => addServiceBullet(idx)} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded hover:bg-primary/20 transition-colors">
-                        + Add Bullet
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {(svc.bullets || []).map((bullet, bIdx) => (
-                        <div key={bIdx} className="flex gap-2">
-                          <input 
-                            type="text" 
-                            value={bullet} 
-                            onChange={e => updateServiceBullet(idx, bIdx, e.target.value)}
-                            className="flex-1 p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-xs text-dark dark:text-fontwhite"
-                          />
-                          <button onClick={() => removeServiceBullet(idx, bIdx)} className="text-red-400 hover:text-red-600 px-1">✕</button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="border-t border-gray-100 dark:border-white/10 pt-6">
-                    <h3 className="text-md font-semibold text-secondary dark:text-primary mb-4">Additional Images (Gallery)</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {[0, 1, 2].map(imgIdx => (
-                        <ImageUpload
-                          key={imgIdx}
-                          label={`Image ${imgIdx + 1}`}
-                          value={svc.additionalImages ? svc.additionalImages[imgIdx] : ''}
-                          onChange={val => updateServiceAdditionalImage(idx, imgIdx, val)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500">
-          <div className="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-white/10 pb-2">
-            <h2 className="text-lg font-semibold text-secondary dark:text-primary">Projects</h2>
-            <button onClick={addProject} className="text-sm bg-primary/5 hover:bg-primary/10 text-dark dark:text-fontwhite px-3 py-1.5 rounded-md font-medium transition-colors">
-              + Add Project
-            </button>
-          </div>
-          <div className="space-y-8">
-            {data.projects.map((proj, idx) => (
-              <div key={proj.id} className="p-4 border border-gray-200 dark:border-white/10 rounded-xl relative bg-white dark:bg-white/5 transition-colors duration-500">
-                <button
-                  onClick={() => removeArrayItem('projects', idx)}
-                  className="absolute top-4 right-4 text-red-500 hover:text-red-700 font-semibold text-sm"
-                >Remove</button>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
-                    <input type="text" value={proj.title} onChange={e => updateArrayItem('projects', idx, 'title', e.target.value)}
-                      className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <ImageUpload
-                      label="Project Image"
-                      value={proj.image || ''}
-                      onChange={val => updateArrayItem('projects', idx, 'image', val)}
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tags (Comma separated)</label>
-                    <input type="text" value={proj.tags?.join(', ')} onChange={e => updateTags(idx, e.target.value)}
-                      className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
-                    <textarea value={proj.description} onChange={e => updateArrayItem('projects', idx, 'description', e.target.value)} rows={2}
-                      className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
-                  </div>
-
-                  {/* Project Details */}
-                  <div className="md:col-span-2 border-t border-gray-100 dark:border-white/10 pt-4 mt-2">
-                    <h3 className="text-sm font-semibold text-secondary dark:text-primary mb-3">Project Page Content</h3>
-                    
-                    <div className="space-y-3 mb-4">
-                      {[0, 1, 2].map(pIdx => (
-                        <div key={pIdx}>
-                          <label className="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-0.5">Paragraph {pIdx + 1}</label>
-                          <textarea 
-                            value={proj.paragraphs ? proj.paragraphs[pIdx] : ''} 
-                            onChange={e => updateProjectParagraph(idx, pIdx, e.target.value)} 
-                            rows={3}
-                            className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-xs text-dark dark:text-fontwhite transition-colors duration-500" 
-                            placeholder={`Detailed paragraph ${pIdx + 1}...`}
-                          />
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="mb-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Highlights / Bullets</label>
-                        <button onClick={() => addProjectBullet(idx)} className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded hover:bg-primary/20 transition-colors">
-                          + Add
-                        </button>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        {(proj.bullets || []).map((bullet, bIdx) => (
-                          <div key={bIdx} className="flex gap-1">
-                            <input 
-                              type="text" 
-                              value={bullet} 
-                              onChange={e => updateProjectBullet(idx, bIdx, e.target.value)}
-                              className="flex-1 p-1.5 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-[11px] text-dark dark:text-fontwhite"
-                            />
-                            <button onClick={() => removeProjectBullet(idx, bIdx)} className="text-red-400 hover:text-red-600 px-1 text-xs">✕</button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-medium text-gray-500 dark:text-gray-400 block mb-2">Gallery Images</label>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        {[0, 1, 2].map(imgIdx => (
-                          <ImageUpload
-                            key={imgIdx}
-                            label={`Image ${imgIdx + 1}`}
-                            value={proj.additionalImages ? proj.additionalImages[imgIdx] : ''}
-                            onChange={val => updateProjectAdditionalImage(idx, imgIdx, val)}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500">
-          <div className="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-white/10 pb-2">
-            <h2 className="text-lg font-semibold text-secondary dark:text-primary">Testimonials</h2>
-            <button onClick={addTestimonial} className="text-sm bg-primary/5 hover:bg-primary/10 text-dark dark:text-fontwhite px-3 py-1.5 rounded-md font-medium transition-colors">
-              + Add Testimonial
-            </button>
-          </div>
-          <div className="space-y-8">
-            {data.testimonials.map((test, idx) => (
-              <div key={test.id} className="p-4 border border-gray-200 dark:border-white/10 rounded-xl relative bg-white dark:bg-white/5 transition-colors duration-500">
-                <button
-                  onClick={() => removeArrayItem('testimonials', idx)}
-                  className="absolute top-4 right-4 text-red-500 hover:text-red-700 font-semibold text-sm"
-                >Remove</button>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
-                    <input type="text" value={test.name} onChange={e => updateArrayItem('testimonials', idx, 'name', e.target.value)}
-                      className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Position</label>
-                    <input type="text" value={test.position} onChange={e => updateArrayItem('testimonials', idx, 'position', e.target.value)}
-                      className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <ImageUpload
-                      label="Client Photo"
-                      value={test.photo}
-                      onChange={val => updateArrayItem('testimonials', idx, 'photo', val)}
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Quote</label>
-                    <textarea value={test.quote} onChange={e => updateArrayItem('testimonials', idx, 'quote', e.target.value)} rows={3}
-                      className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500">
-          <h2 className="text-lg font-semibold text-secondary dark:text-primary mb-6 border-b border-gray-100 dark:border-white/10 pb-2">Contact Details Footer</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone 1</label>
-              <input type="text" value={data.contact.phone1} onChange={e => updateField('contact', 'phone1', e.target.value)}
-                className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-dark dark:text-fontwhite transition-colors duration-500 outline-none focus:border-primary" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone 2</label>
-              <input type="text" value={data.contact.phone2} onChange={e => updateField('contact', 'phone2', e.target.value)}
-                className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-dark dark:text-fontwhite transition-colors duration-500 outline-none focus:border-primary" />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
-              <input type="text" value={data.contact.email} onChange={e => updateField('contact', 'email', e.target.value)}
-                className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-dark dark:text-fontwhite transition-colors duration-500 outline-none focus:border-primary" />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address</label>
-              <input type="text" value={data.contact.address} onChange={e => updateField('contact', 'address', e.target.value)}
-                className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-dark dark:text-fontwhite transition-colors duration-500 outline-none focus:border-primary" />
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500">
-          <div className="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-white/10 pb-2">
-            <h2 className="text-lg font-semibold text-secondary dark:text-primary">Technology Partners</h2>
-            <button
-              onClick={() => {
-                setData(prev => ({
-                  ...prev,
-                  partners: [...prev.partners, { id: Date.now(), name: 'New Partner', logo: '' }]
-                }));
-              }}
-              className="text-sm bg-primary/5 hover:bg-primary/10 text-dark dark:text-fontwhite px-3 py-1.5 rounded-md font-medium transition-colors"
-            >
-              + Add Partner
-            </button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {data.partners.map((p, idx) => (
-              <div key={p.id} className="p-4 border border-gray-200 dark:border-white/10 rounded-xl relative bg-white dark:bg-white/5 transition-colors duration-500">
-                <button
-                  onClick={() => removeArrayItem('partners', idx)}
-                  className="absolute top-2 right-2 text-red-500 hover:text-red-700 font-semibold text-xs transition-colors"
-                >Remove</button>
-                <div className="space-y-3">
-                  <input
-                    type="text" value={p.name} onChange={e => updateArrayItem('partners', idx, 'name', e.target.value)}
-                    placeholder="Partner Name"
-                    className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500"
-                  />
-                  <ImageUpload
-                    value={p.logo}
-                    onChange={val => updateArrayItem('partners', idx, 'logo', val)}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      </main>
+            </section>
+          )}
+        </main>
+      </div>
 {/* Account settings modal */}
       {showAccountSettings && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">

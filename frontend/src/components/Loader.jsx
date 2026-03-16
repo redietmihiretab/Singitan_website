@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Loader() {
   const [hidden, setHidden] = useState(false);
   const [removed, setRemoved] = useState(false);
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     const hideTimer = setTimeout(() => setHidden(true), 2000);
@@ -27,7 +29,7 @@ export default function Loader() {
         transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
       >
         <img
-          src="/images/logo_horizontal.svg"
+          src={isDarkMode ? "/images/logo_horizontal_light.svg" : "/images/logo_horizontal.svg"}
           alt="Sington Engineering"
           className="w-48 h-auto"
         />

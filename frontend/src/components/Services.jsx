@@ -69,19 +69,6 @@ export default function Services({ data }) {
     });
   }, []);
 
-  const startAuto = useCallback(() => {
-    intervalRef.current = setInterval(scrollNext, 5000);
-  }, [scrollNext]);
-
-  const stopAuto = useCallback(() => {
-    clearInterval(intervalRef.current);
-  }, []);
-
-  useEffect(() => {
-    startAuto();
-    return stopAuto;
-  }, [startAuto, stopAuto]);
-
   return (
     <section ref={targetRef} id="services" className="py-20 scroll-mt-20 transition-colors duration-500 overflow-hidden">
       <motion.div
@@ -97,8 +84,6 @@ export default function Services({ data }) {
           <div className="overflow-hidden px-4 md:px-0">
             <div
               ref={carouselRef}
-              onMouseEnter={stopAuto}
-              onMouseLeave={startAuto}
               className="flex gap-6 lg:gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide pb-4"
               style={{
                 scrollbarWidth: 'none',
@@ -115,7 +100,7 @@ export default function Services({ data }) {
 
           {/* Navigation Buttons */}
           <button
-            onClick={() => { stopAuto(); carouselRef.current?.scrollBy({ left: -carouselRef.current.offsetWidth, behavior: 'smooth' }); startAuto(); }}
+            onClick={() => { carouselRef.current?.scrollBy({ left: -carouselRef.current.offsetWidth, behavior: 'smooth' }); }}
             className="absolute -left-4 lg:-left-12 top-1/2 -translate-y-1/2 z-10 text-primary dark:text-fontwhite
                        w-10 h-10 rounded-full flex items-center justify-center 
                        hover:text-lightblack dark:hover:text-primary hover:scale-110 transition-all duration-200 hidden md:flex"
@@ -125,7 +110,7 @@ export default function Services({ data }) {
           </button>
 
           <button
-            onClick={() => { stopAuto(); carouselRef.current?.scrollBy({ left: carouselRef.current.offsetWidth, behavior: 'smooth' }); startAuto(); }}
+            onClick={() => { carouselRef.current?.scrollBy({ left: carouselRef.current.offsetWidth, behavior: 'smooth' }); }}
             className="absolute -right-4 lg:-right-12 top-1/2 -translate-y-1/2 z-10 text-primary dark:text-fontwhite
                        w-10 h-10 rounded-full flex items-center justify-center 
                        hover:text-lightblack dark:hover:text-primary hover:scale-110 transition-all duration-200 hidden md:flex"

@@ -47,22 +47,25 @@ export default function Hero({ data }) {
             <motion.h1
               variants={item}
               className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight
-                         tracking-tight text-black dark:text-fontwhite mb-6 transition-colors duration-500"
+                         tracking-tight text-black dark:text-fontwhite mb-6 transition-colors duration-500
+                         min-h-[120px] sm:min-h-[130px] md:min-h-[150px] lg:min-h-[170px]"
             >
-              {headline}{' '}
-              <br />
-              {headlineHighlight && (
-                <TypeAnimation
-                  sequence={[
-                    headlineHighlight, 3000,
-                    '', 500
-                  ]}
-                  wrapper="span"
-                  speed={50}
-                  repeat={Infinity}
-                  className="inline-block min-w-[12ch] text-secondary font-extrabold tracking-wide dark:drop-shadow-[0_0_15px_rgba(247,147,30,0.6)]"
-                />
-              )}
+              <div className="inline-block w-full">
+                {headline}{' '}
+                <br />
+                {headlineHighlight && (
+                  <TypeAnimation
+                    sequence={[
+                      headlineHighlight, 3000,
+                      '', 500
+                    ]}
+                    wrapper="span"
+                    speed={50}
+                    repeat={Infinity}
+                    className="inline-block text-secondary font-extrabold tracking-wide dark:drop-shadow-[0_0_15px_rgba(247,147,30,0.6)]"
+                  />
+                )}
+              </div>
             </motion.h1>
             <motion.p
               variants={item}
