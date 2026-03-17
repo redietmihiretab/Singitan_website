@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Menu, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
@@ -24,6 +25,7 @@ export default function Header({ logos }) {
   }, []);
 
   // Close mobile nav on route change
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMobileOpen(false), [location]);
 
   const handleNavClick = (href) => {
@@ -51,7 +53,7 @@ export default function Header({ logos }) {
                 ? (logos?.light?.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${logos.light}` : (logos?.light || "/images/logo_horizontal_light.svg"))
                 : (logos?.dark?.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${logos.dark}` : (logos?.dark || "/images/logo_horizontal.svg"))
               } 
-              alt="Sington Engineering" 
+              alt="Singitan Engineering" 
               className="h-10 w-auto" 
             />
           </Link>

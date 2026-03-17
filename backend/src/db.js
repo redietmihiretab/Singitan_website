@@ -1,90 +1,180 @@
-import Database from 'better-sqlite3';
+import pg from 'pg';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import fs from 'fs';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataDir = process.env.DATA_DIR || path.join(__dirname, 'data');
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
+const { Pool } = pg;
 
-const dbPath = path.join(dataDir, 'database.sqlite');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CONTENT_PATH = path.join(__dirname, 'data', 'content.json');
 
-const db = new Database(dbPath);
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+});
 
-// Create tables
-db.exec(`
-  CREATE TABLE IF NOT EXISTS content (
-    key TEXT PRIMARY KEY,
-    value TEXT NOT NULL
-  );
+const initializeDatabase = async () => {
+  try {
+    const client = await pool.connect();
+    console.log('Connected to PostgreSQL');
 
-  CREATE TABLE IF NOT EXISTS contact_submissions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    message TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    is_handled INTEGER DEFAULT 0,
-    handled_at TEXT
-  );
+    // 1. Create Tables
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS auser (
+        id SERIAL PRIMARY KEY,
+        username TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        role TEXT DEFAULT 'admin'
+      );
 
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL,
-    role TEXT DEFAULT 'admin'
-  );
-`);
+      CREATE TABLE IF NOT EXISTS form_message (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        message TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        is_handled SMALLINT DEFAULT 0,
+        handled_at TEXT
+      );
 
-// Migration: Add columns if they don't exist (for existing databases)
-try {
-  db.prepare('ALTER TABLE contact_submissions ADD COLUMN is_handled INTEGER DEFAULT 0').run();
-} catch (e) {
-  // Column already exists, ignore
-}
-try {
-  db.prepare('ALTER TABLE contact_submissions ADD COLUMN handled_at TEXT').run();
-} catch (e) {
-  // Column already exists, ignore
-}
+      CREATE TABLE IF NOT EXISTS web_settings (
+        key TEXT PRIMARY KEY,
+        value JSONB NOT NULL
+      );
 
-console.log('Database tables initialized.');
+      CREATE TABLE IF NOT EXISTS services (
+        id SERIAL PRIMARY KEY,
+        title TEXT NOT NULL,
+        description TEXT,
+        image TEXT,
+        paragraphs JSONB DEFAULT '[]',
+        bullets JSONB DEFAULT '[]',
+        additional_images JSONB DEFAULT '[]',
+        display_order INTEGER DEFAULT 0
+      );
 
-// Migration logic
-const seedData = () => {
-  // Seed Content
-  const contentCount = db.prepare('SELECT COUNT(*) as count FROM content').get().count;
-  if (contentCount === 0 && fs.existsSync(CONTENT_PATH)) {
-    console.log('Seeding content from JSON file...');
-    const data = JSON.parse(fs.readFileSync(CONTENT_PATH, 'utf-8'));
-    const insert = db.prepare('INSERT INTO content (key, value) VALUES (?, ?)');
-    const transaction = db.transaction((contentData) => {
-      for (const [key, value] of Object.entries(contentData)) {
-        insert.run(key, JSON.stringify(value));
+      CREATE TABLE IF NOT EXISTS projects (
+        id SERIAL PRIMARY KEY,
+        title TEXT NOT NULL,
+        description TEXT,
+        image TEXT,
+        tags JSONB DEFAULT '[]',
+        paragraphs JSONB DEFAULT '[]',
+        bullets JSONB DEFAULT '[]',
+        additional_images JSONB DEFAULT '[]',
+        display_order INTEGER DEFAULT 0
+      );
+
+      CREATE TABLE IF NOT EXISTS testimonials (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        position TEXT,
+        quote TEXT,
+        photo TEXT,
+        display_order INTEGER DEFAULT 0
+      );
+
+      CREATE TABLE IF NOT EXISTS partners (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        logo TEXT NOT NULL,
+        display_order INTEGER DEFAULT 0
+      );
+
+      CREATE TABLE IF NOT EXISTS stats (
+        id SERIAL PRIMARY KEY,
+        label TEXT NOT NULL,
+        value TEXT NOT NULL,
+        display_order INTEGER DEFAULT 0
+      );
+    `);
+
+    // 2. Seeding Logic (only if tables are empty)
+    const settingsCheck = await client.query('SELECT COUNT(*) FROM web_settings');
+    if (parseInt(settingsCheck.rows[0].count) === 0 && fs.existsSync(CONTENT_PATH)) {
+      console.log('Seeding relational tables from content.json...');
+      const data = JSON.parse(fs.readFileSync(CONTENT_PATH, 'utf-8'));
+      
+      // Seed singular settings
+      const settingsKeys = ['logos', 'hero', 'about', 'cta', 'contact'];
+      for (const key of settingsKeys) {
+        if (data[key]) {
+          await client.query('INSERT INTO web_settings (key, value) VALUES ($1, $2)', [key, JSON.stringify(data[key])]);
+        }
       }
-    });
-    transaction(data);
-  }
 
-  // Seed Admin User
-  const userCount = db.prepare('SELECT COUNT(*) as count FROM users').get().count;
-  if (userCount === 0) {
-    const adminUser = process.env.ADMIN_USERNAME || 'admin';
-    const adminHash = process.env.ADMIN_PASSWORD_HASH;
-    
-    if (adminHash) {
-      console.log('Seeding admin user from .env...');
-      db.prepare('INSERT INTO users (username, password_hash) VALUES (?, ?)').run(adminUser, adminHash);
+      // Seed Services
+      if (data.services) {
+        for (const [idx, item] of data.services.entries()) {
+          await client.query(
+            'INSERT INTO services (title, description, image, paragraphs, bullets, additional_images, display_order) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+            [item.title, item.description, item.image, JSON.stringify(item.paragraphs), JSON.stringify(item.bullets), JSON.stringify(item.additionalImages), idx]
+          );
+        }
+      }
+
+      // Seed Projects
+      if (data.projects) {
+        for (const [idx, item] of data.projects.entries()) {
+          await client.query(
+            'INSERT INTO projects (title, description, image, tags, paragraphs, bullets, additional_images, display_order) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+            [item.title, item.description, item.image, JSON.stringify(item.tags), JSON.stringify(item.paragraphs), JSON.stringify(item.bullets), JSON.stringify(item.additionalImages), idx]
+          );
+        }
+      }
+
+      // Seed Testimonials
+      if (data.testimonials) {
+        for (const [idx, item] of data.testimonials.entries()) {
+          await client.query(
+            'INSERT INTO testimonials (name, position, quote, photo, display_order) VALUES ($1, $2, $3, $4, $5)',
+            [item.name, item.position, item.quote, item.photo, idx]
+          );
+        }
+      }
+
+      // Seed Partners
+      if (data.partners) {
+        for (const [idx, item] of data.partners.entries()) {
+          await client.query('INSERT INTO partners (name, logo, display_order) VALUES ($1, $2, $3)', [item.name, item.logo, idx]);
+        }
+      }
+
+      // Seed Stats
+      if (data.stats) {
+        for (const [idx, item] of data.stats.entries()) {
+          await client.query('INSERT INTO stats (label, value, display_order) VALUES ($1, $2, $3)', [item.label, item.value, idx]);
+        }
+      }
     }
+
+    // Seed Admin User
+    const userCheck = await client.query('SELECT COUNT(*) FROM auser');
+    if (parseInt(userCheck.rows[0].count) === 0) {
+      const adminUser = process.env.ADMIN_USERNAME || 'admin';
+      const adminHash = process.env.ADMIN_PASSWORD_HASH || '$2a$10$8AnhMN1M2PUznIiNavZ25OsZpSycVGlUrd9zFJH2oJBufrM1zHDke';
+      console.log('Seeding initial admin user...');
+      await client.query('INSERT INTO auser (username, password_hash) VALUES ($1, $2)', [adminUser, adminHash]);
+    }
+
+    console.log('Database tables initialized.');
+    client.release();
+  } catch (err) {
+    console.error('Error initializing database:', err);
+    process.exit(1);
   }
 };
 
-seedData();
+// Start initialization
+initializeDatabase();
 
-export default db;
+export default {
+  query: (text, params) => pool.query(text, params),
+  pool
+};

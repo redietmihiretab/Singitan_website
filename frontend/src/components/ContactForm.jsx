@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { User, Mail, MessageSquare } from 'lucide-react';
+// eslint-disable-next-line no-unused-vars
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';

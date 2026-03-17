@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { TypeAnimation } from 'react-type-animation';
 import { ChevronDown } from 'lucide-react';
@@ -46,9 +47,9 @@ export default function Hero({ data }) {
           >
             <motion.h1
               variants={item}
-              className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight
+              className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight
                          tracking-tight text-black dark:text-fontwhite mb-6 transition-colors duration-500
-                         min-h-[120px] sm:min-h-[130px] md:min-h-[150px] lg:min-h-[170px]"
+                         min-h-[160px] sm:min-h-[150px] md:min-h-[150px] lg:min-h-[170px]"
             >
               <div className="inline-block w-full">
                 {headline}{' '}
@@ -98,7 +99,7 @@ export default function Hero({ data }) {
             <div className="absolute inset-0  blur-[60px]  scale-75 -z-10 animate-neon-pulse" />
             <img
               src={data.image?.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${data.image}` : (data.image || '/images/hero.png')}
-              alt="Sington Engineering"
+              alt="Singitan Engineering"
               className="w-full max-w-sm md:max-w-md "
               loading="eager"
             />

@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { Phone, Mail, MapPin } from 'lucide-react';
+// eslint-disable-next-line no-unused-vars
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Link } from 'react-router-dom';
 

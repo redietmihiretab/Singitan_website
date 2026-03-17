@@ -1,8 +1,0 @@
-node_modules
-.env
-.git
-.gitignore
-*.sqlite
-*.log
-src/data/database.sqlite
-src/data/database.sqlite-journal

@@ -1,5 +1,6 @@
-import { useRef, useEffect, useCallback } from 'react';
+import { useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+// eslint-disable-next-line no-unused-vars
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
 function ServiceCard({ service }) {
@@ -43,7 +44,7 @@ function ServiceCard({ service }) {
 export default function Services({ data }) {
   const targetRef = useRef(null);
   const carouselRef = useRef(null);
-  const intervalRef = useRef(null);
+  // Removed intervalRef
 
   // Scroll Scrubbing Setup
   const { scrollYProgress } = useScroll({
@@ -58,16 +59,7 @@ export default function Services({ data }) {
   const sectionY = useTransform(smoothProgress, [0, 1], [100, 0]);
   const sectionScale = useTransform(smoothProgress, [0, 1], [0.95, 1]);
 
-  const scrollNext = useCallback(() => {
-    const el = carouselRef.current;
-    if (!el) return;
-    const pageWidth = el.offsetWidth;
-    const atEnd = el.scrollLeft + pageWidth >= el.scrollWidth - 2;
-    el.scrollTo({
-      left: atEnd ? 0 : el.scrollLeft + pageWidth,
-      behavior: 'smooth',
-    });
-  }, []);
+  // Navigation handlers are defined inline
 
   return (
     <section ref={targetRef} id="services" className="py-20 scroll-mt-20 transition-colors duration-500 overflow-hidden">

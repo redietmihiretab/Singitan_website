@@ -2,6 +2,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import contactRouter from './routes/contact.js';
@@ -12,6 +14,21 @@ import uploadRouter from './routes/upload.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Security Middleware (Helmet)
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" } // Required if serving images to other origins
+}));
+
+// Global Rate Limiting
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  limit: 200, 
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many requests, please try again later.' }
+});
+app.use(globalLimiter);
 
 const allowedOrigins = new Set(
   [

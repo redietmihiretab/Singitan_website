@@ -1,22 +1,32 @@
 import { Router } from 'express';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 import db from '../db.js';
 import verifyToken from '../middleware/auth.js';
+import rateLimit from 'express-rate-limit';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
-dotenv.config();
+
 
 const router = Router();
 
-router.post('/login', async (req, res) => {
+// Stricter limiter for login to prevent brute force
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 5, // Limit each IP to 5 login attempts per window
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many login attempts, please try again after 15 minutes.' }
+});
+
+router.post('/login', loginLimiter, async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password)
     return res.status(400).json({ success: false, message: 'Username and password required.' });
 
   try {
-    const user = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
+    const result = await db.query('SELECT * FROM auser WHERE username = $1', [username]);
+    const user = result.rows[0];
     
     if (!user)
       return res.status(401).json({ success: false, message: 'Invalid credentials.' });
@@ -48,13 +58,13 @@ router.put('/update-credentials', verifyToken, async (req, res) => {
 
   try {
     if (newUsername) {
-      db.prepare('UPDATE users SET username = ? WHERE username = ?').run(newUsername, currentUsername);
+      await db.query('UPDATE auser SET username = $1 WHERE username = $2', [newUsername, currentUsername]);
     }
     
     if (newPassword) {
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(newPassword, salt);
-      db.prepare('UPDATE users SET password_hash = ? WHERE username = ?').run(hash, newUsername || currentUsername);
+      await db.query('UPDATE auser SET password_hash = $1 WHERE username = $2', [hash, newUsername || currentUsername]);
     }
 
     res.json({ success: true, message: 'Credentials updated successfully. Please log in again.' });

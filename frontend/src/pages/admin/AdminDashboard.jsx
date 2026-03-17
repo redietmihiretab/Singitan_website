@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogOut, Save, LayoutDashboard, Loader2, Sun, Moon, X, Eye, EyeOff, Bell, CheckCircle, Check, Inbox, Image as ImageIcon, Home, Info, Briefcase, BarChart3, FolderGit2, MessageSquare, Link as LinkIcon, Users } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
@@ -14,7 +14,6 @@ export default function AdminDashboard() {
   const [submissions, setSubmissions] = useState([]);
   const [submissionsLoading, setSubmissionsLoading] = useState(false);
   const [submissionsError, setSubmissionsError] = useState(null);
-  const [showNotifications, setShowNotifications] = useState(false);
   const [showInbox, setShowInbox] = useState(false);
   const [inboxFilter, setInboxFilter] = useState('all'); // 'all', 'unhandled', 'handled'
   const [showAccountMenu, setShowAccountMenu] = useState(false);
@@ -84,7 +83,7 @@ export default function AdminDashboard() {
     };
 
     loadData();
-  }, []);
+  }, [handleLogout]);
 
 const refreshSubmissions = async () => {
     setSubmissionsLoading(true);
@@ -135,10 +134,10 @@ const refreshSubmissions = async () => {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     localStorage.removeItem('sington_admin_token');
-    navigate('/sington-cms-portal');
-  };
+    navigate('/singitan-cms-portal');
+  }, [navigate]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -405,7 +404,7 @@ const refreshSubmissions = async () => {
           <Link to="/" className="flex items-center gap-3 group transition-opacity hover:opacity-80">
             <img
               src={isDarkMode ? "/images/logo_horizontal_light.svg" : "/images/logo_horizontal.svg"}
-              alt="Sington Engineering"
+              alt="Singitan Engineering"
               className="h-8 w-auto"
             />
             <div className="h-6 w-px bg-gray-200 dark:bg-white/20 mx-2" />

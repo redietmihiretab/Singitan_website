@@ -3,10 +3,21 @@ import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import db from '../db.js';
 import verifyToken from '../middleware/auth.js';
+import rateLimit from 'express-rate-limit';
 
 dotenv.config();
 
 const router = Router();
+
+// Rate limiting for contact form to prevent email spam
+const contactLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  limit: 3, // Limit each IP to 3 submissions per hour
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many messages sent. Please try again later.' }
+});
+
 const NAME_REGEX = /^[a-zA-Z\s\-']{3,50}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MSG_RESTRICT = /[<>{}[\]]/;
@@ -33,10 +44,10 @@ function createTransporter() {
 }
 
 // Protected: Get all submissions for admin
-router.get('/submissions', verifyToken, (_req, res) => {
+router.get('/submissions', verifyToken, async (_req, res) => {
   try {
-    const submissions = db.prepare('SELECT * FROM contact_submissions ORDER BY created_at DESC').all();
-    res.json({ success: true, data: submissions });
+    const result = await db.query('SELECT * FROM form_message ORDER BY created_at DESC');
+    res.json({ success: true, data: result.rows });
   } catch (error) {
     console.error('Database Error:', error);
     res.status(500).json({ success: false, message: 'Could not fetch submissions.' });
@@ -44,12 +55,14 @@ router.get('/submissions', verifyToken, (_req, res) => {
 });
 
 // Protected: Mark submission as handled (non-reversible)
-router.put('/submissions/:id/handle', verifyToken, (req, res) => {
+router.put('/submissions/:id/handle', verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
     
     // Check if already handled
-    const existing = db.prepare('SELECT is_handled FROM contact_submissions WHERE id = ?').get(id);
+    const existingResult = await db.query('SELECT is_handled FROM form_message WHERE id = $1', [id]);
+    const existing = existingResult.rows[0];
+    
     if (!existing) {
       return res.status(404).json({ success: false, message: 'Submission not found.' });
     }
@@ -61,10 +74,9 @@ router.put('/submissions/:id/handle', verifyToken, (req, res) => {
     
     const handledAt = new Date().toISOString();
     
-    const stmt = db.prepare('UPDATE contact_submissions SET is_handled = 1, handled_at = ? WHERE id = ?');
-    const result = stmt.run(handledAt, id);
+    const result = await db.query('UPDATE form_message SET is_handled = 1, handled_at = $1 WHERE id = $2', [handledAt, id]);
     
-    if (result.changes === 0) {
+    if (result.rowCount === 0) {
       return res.status(404).json({ success: false, message: 'Submission not found.' });
     }
     
@@ -75,7 +87,7 @@ router.put('/submissions/:id/handle', verifyToken, (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', contactLimiter, async (req, res) => {
   const { name, email, message } = req.body;
 
   const error = validateInput({ name, email, message });
@@ -83,8 +95,7 @@ router.post('/', async (req, res) => {
 
   try {
     // 1. Save to Database first
-    const insert = db.prepare('INSERT INTO contact_submissions (name, email, message) VALUES (?, ?, ?)');
-    insert.run(name.trim(), email.trim(), message.trim());
+    await db.query('INSERT INTO form_message (name, email, message) VALUES ($1, $2, $3)', [name.trim(), email.trim(), message.trim()]);
 
     // 2. Send response immediately (before sending emails)
     res.json({ success: true, message: "Success! Your message was saved and we'll be in touch." });

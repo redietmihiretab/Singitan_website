@@ -1,6 +1,6 @@
-# Sington Engineering Website
+# Singitan Engineering Website
 
-A full-stack web application for Sington Engineering company featuring a responsive frontend and admin CMS dashboard.
+A full-stack web application for Singitan Engineering company featuring a responsive frontend and admin CMS dashboard.
 
 ## 🚀 Tech Stack
 
@@ -13,7 +13,7 @@ A full-stack web application for Sington Engineering company featuring a respons
 
 ### Backend
 - **Express.js** - REST API
-- **SQLite** - Database (better-sqlite3)
+- **PostgreSQL** - Database (pg)
 - **JSON Web Token** - Authentication
 - **Multer** - File uploads
 - **Nodemailer** - Email sending
@@ -21,7 +21,7 @@ A full-stack web application for Sington Engineering company featuring a respons
 ## 📁 Project Structure
 
 ```
-sington/
+singitan/
 ├── backend/                 # Express.js API server
 │   ├── src/
 │   │   ├── app.js          # Main Express app
@@ -89,6 +89,13 @@ The frontend will start on `http://localhost:5173`
 PORT=5000
 FRONTEND_URL=http://localhost:5173
 JWT_SECRET=your-secret-key
+DB_USER=postgres
+DB_PASSWORD=your-postgres-password
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=Singitan_Db
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD_HASH=your_bcrypt_hash
 ```
 
 ### Frontend (.env)
@@ -138,7 +145,7 @@ VITE_API_URL=http://localhost:5000
 Edit `frontend/tailwind.config.js` to customize colors, fonts, and theme.
 
 ### Content Management
-Access the admin panel at `/sington-cms-portal` to manage:
+Access the admin panel at `/singitan-cms-portal` to manage:
 - Company information
 - Services offered
 - Portfolio projects
