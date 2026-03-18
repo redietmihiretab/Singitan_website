@@ -1,43 +1,65 @@
 {
+  "logos": {
+    "dark": "/images/logo_horizontal.svg",
+    "light": "/images/logo_horizontal_light.svg"
+  },
   "hero": {
-    "headline": "TRANSFORM YOUR BUSINESS ",
-    "headlineHighlight": "WITH ADVANCED IT SOLUTIONS",
+    "ctaLink": "#contact",
     "subtext": "Unlock new levels of efficiency, agility, and growth. Our cutting-edge IT solutions from cloud infrastructure and intelligent automation to enterprise networks and telecom engineering are tailored to propel your business forward.",
     "ctaLabel": "GET STARTED",
-    "ctaLink": "#contact"
+    "headline": "TRANSFORM YOUR BUSINESS",
+    "headlineHighlight": "ADVANCED IT SOLUTIONS"
   },
   "about": {
-    "sectionTitle": "Get to know Us",
-    "heading": "Leading IT Solutions Provider Since 2012",
     "body": "Sington Engineering PLC is a premier IT solutions provider specializing in advanced technology services for businesses across various industries. With our headquarters in Guangdong, we serve clients globally with cutting-edge solutions. Our team of certified professionals combines technical expertise with business acumen to deliver solutions that drive growth, efficiency, and competitive advantage.",
+    "ctaLink": "#services",
+    "heading": "Leading IT Solutions Provider Since 2012",
     "ctaLabel": "Our Services",
-    "ctaLink": "#services"
+    "sectionTitle": "Get to know Us"
+  },
+  "cta": {
+    "ctaLink": "#contact",
+    "subtext": "Contact us today to discover how our advanced IT solutions can help your business thrive.",
+    "ctaLabel": "GET IN TOUCH",
+    "headline": "READY TO TRANSFORM",
+    "headlineAccent": "YOUR BUSINESS?"
+  },
+  "contact": {
+    "email": "info@singitanengineering.com",
+    "phone1": "+251909090928",
+    "phone2": "+251975040521",
+    "address": "Bole, Atlas, Addis Ababa, Ethiopia",
+    "twitter": "https://twitter.com",
+    "facebook": "https://facebook.com",
+    "linkedin": "https://www.linkedin.com/company/singitan-engineering/",
+    "mapEmbed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.6544577528375!2d38.78409179999999!3d9.0039078!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b859272a60d37%3A0x5176c0938998331a!2sSingitan%20Engineering%20PLC!5e0!3m2!1sen!2set!4v1757323258167!5m2!1sen!2set",
+    "instagram": "https://instagram.com"
   },
   "stats": [
     {
-      "id": 1,
+      "id": 5,
       "value": "10+",
       "label": "Years of Experience"
     },
     {
-      "id": 2,
+      "id": 6,
       "value": "100+",
       "label": "Happy Clients"
     },
     {
-      "id": 3,
+      "id": 7,
       "value": "150+",
       "label": "Projects Completed"
     },
     {
-      "id": 4,
+      "id": 8,
       "value": "24/7",
       "label": "Support Available"
     }
   ],
   "services": [
     {
-      "id": 1,
+      "id": 5,
       "title": "Modern Data Center and Cloud",
       "description": "Cloud services offer a significantly more cost effective solution, particularly for small businesses. They minimize upfront investment and operational overhead while providing scalable infrastructure that adapts seamlessly to evolving data demands.",
       "image": "/images/2.jpg",
@@ -59,7 +81,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": 6,
       "title": "Enterprise Network Services",
       "description": "We deliver comprehensive network solutions encompassing physical, virtual, and logical design. Our approach integrates advanced software, hardware, and protocols to ensure secure, reliable, and efficient data transmission aligned with your business objectives.",
       "image": "/images/1.jpg",
@@ -81,7 +103,7 @@
       ]
     },
     {
-      "id": 3,
+      "id": 7,
       "title": "Business Automation and Intelligence",
       "description": "Transform data into strategic insights. Our technology driven process analyzes complex information and delivers actionable intelligence, empowering executives, managers, and teams to drive efficiency, innovation, and competitive advantage.",
       "image": "/images/3.jpg",
@@ -103,7 +125,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": 8,
       "title": "Cybersecurity Solutions",
       "description": "Protect your business with enterprise-grade cybersecurity. We offer threat detection, firewall management, endpoint protection, and compliance solutions to keep your data and operations safe from modern cyber threats.",
       "image": "/images/2.jpg",
@@ -127,10 +149,9 @@
   ],
   "projects": [
     {
-      "id": 1,
+      "id": 4,
       "title": "Banking System Modernization",
       "description": "Complete infrastructure overhaul for a leading financial institution with enhanced security and cloud migration.",
-      "placeholder": "Financial Services Project",
       "image": "/images/21.jpg",
       "tags": [
         "Cloud Migration",
@@ -155,10 +176,9 @@
       ]
     },
     {
-      "id": 2,
+      "id": 5,
       "title": "Hospital Network Infrastructure",
       "description": "Designed and implemented a secure, HIPAA-compliant network for a regional hospital system.",
-      "placeholder": "Healthcare Project",
       "image": "/images/22.jpg",
       "tags": [
         "Healthcare",
@@ -183,10 +203,9 @@
       ]
     },
     {
-      "id": 3,
+      "id": 6,
       "title": "E-commerce Platform Scaling",
       "description": "Scaled infrastructure for high-traffic e-commerce platform during peak season with zero downtime.",
-      "placeholder": "E-commerce Project",
       "image": "/images/3.jpg",
       "tags": [
         "Scalability",
@@ -213,65 +232,47 @@
   ],
   "partners": [
     {
-      "id": 1,
+      "id": 5,
       "name": "Cisco",
       "logo": "/images/cisco.png"
     },
     {
-      "id": 2,
+      "id": 6,
       "name": "Ericsson",
       "logo": "/images/eric.png"
     },
     {
-      "id": 3,
+      "id": 7,
       "name": "Sophos",
       "logo": "/images/sophos.png"
     },
     {
-      "id": 4,
+      "id": 8,
       "name": "ZTE",
       "logo": "/images/zte.png"
     }
   ],
   "testimonials": [
     {
-      "id": 1,
+      "id": 4,
       "name": "Jane Smith",
       "position": "CEO of TechNova",
       "quote": "The team provided excellent IT solutions that helped our business grow rapidly. Highly recommended!",
       "photo": "/images/acc1.jpg"
     },
     {
-      "id": 2,
+      "id": 5,
       "name": "Michael Lee",
       "position": "Operations Manager at GreenSoft",
       "quote": "Professional, responsive, and knowledgeable. We are very satisfied with their services.",
       "photo": "/images/acc3.jpg"
     },
     {
-      "id": 3,
+      "id": 6,
       "name": "Linda Zhang",
       "position": "Founder of StartUp Hub",
       "quote": "Their support and expertise made a real difference in our workflow efficiency.",
       "photo": "/images/acc2.jpg"
     }
-  ],
-  "cta": {
-    "headline": "READY TO TRANSFORM",
-    "headlineAccent": "YOUR BUSINESS?",
-    "subtext": "Contact us today to discover how our advanced IT solutions can help your business thrive.",
-    "ctaLabel": "GET IN TOUCH",
-    "ctaLink": "#contact"
-  },
-  "contact": {
-    "phone1": "+251909090928",
-    "phone2": "+251975040521",
-    "email": "info@singitanengineering.com",
-    "address": "Bole, Atlas, Addis Ababa, Ethiopia",
-    "linkedin": "https://www.linkedin.com/company/singitan-engineering/",
-    "facebook": "https://facebook.com",
-    "instagram": "https://instagram.com",
-    "twitter": "https://twitter.com",
-    "mapEmbed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.6544577528375!2d38.78409179999999!3d9.0039078!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b859272a60d37%3A0x5176c0938998331a!2sSingitan%20Engineering%20PLC!5e0!3m2!1sen!2set!4v1757323258167!5m2!1sen!2set"
-  }
+  ]
 }

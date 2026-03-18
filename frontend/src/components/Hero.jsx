@@ -47,7 +47,7 @@ export default function Hero({ data }) {
           >
             <motion.h1
               variants={item}
-              className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight
+              className="text-3xl md:text-5xl lg:text-5xl font-bold leading-tight
                          tracking-tight text-black dark:text-fontwhite mb-6 transition-colors duration-500
                          min-h-[160px] sm:min-h-[150px] md:min-h-[150px] lg:min-h-[170px]"
             >

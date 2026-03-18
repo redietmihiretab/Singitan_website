@@ -70,6 +70,14 @@ CREATE TABLE IF NOT EXISTS stats (
   display_order INTEGER DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS uploaded_images (
+  id SERIAL PRIMARY KEY,
+  filename TEXT UNIQUE NOT NULL,
+  mimetype TEXT NOT NULL,
+  image_data BYTEA NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- 4. Seed Data
 
 -- Admin User

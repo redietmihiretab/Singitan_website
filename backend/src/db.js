@@ -93,6 +93,14 @@ const initializeDatabase = async () => {
         value TEXT NOT NULL,
         display_order INTEGER DEFAULT 0
       );
+
+      CREATE TABLE IF NOT EXISTS uploaded_images (
+        id SERIAL PRIMARY KEY,
+        filename TEXT UNIQUE NOT NULL,
+        mimetype TEXT NOT NULL,
+        image_data BYTEA NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
     `);
 
     // 2. Seeding Logic (only if tables are empty)

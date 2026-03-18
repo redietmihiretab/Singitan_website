@@ -10,6 +10,7 @@ import contactRouter from './routes/contact.js';
 import authRouter from './routes/auth.js';
 import contentRouter from './routes/content.js';
 import uploadRouter from './routes/upload.js';
+import imagesRouter from './routes/images.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -60,6 +61,7 @@ app.use('/api/contact', contactRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/content', contentRouter);
 app.use('/api/upload', uploadRouter);
+app.use('/api/images', imagesRouter);
 
 // Global error handler
 app.use((err, _req, res, _next) => {
