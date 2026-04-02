@@ -6,8 +6,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const { Pool } = pg;
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CONTENT_PATH = path.join(__dirname, 'data', 'content.json');
 
