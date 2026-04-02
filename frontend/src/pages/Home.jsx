@@ -12,7 +12,7 @@ import ContactForm from '../components/ContactForm';
 import Footer from '../components/Footer';
 import ScrollToTop from '../components/ScrollToTop';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_URL } from '../config';
 
 // Fallback static content (shown if backend is unreachable)
 const FALLBACK = {

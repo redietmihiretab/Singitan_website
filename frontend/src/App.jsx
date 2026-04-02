@@ -7,6 +7,12 @@ const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
 const ServiceDetail = lazy(() => import('./pages/ServiceDetail'));
 const ProjectDetail = lazy(() => import('./pages/ProjectDetail'));
+const Career = lazy(() => import('./pages/Career'));
+const CareerDetail = lazy(() => import('./pages/CareerDetail'));
+const Blog = lazy(() => import('./pages/Blog'));
+const BlogDetail = lazy(() => import('./pages/BlogDetail'));
+const Services = lazy(() => import('./pages/Services'));
+const Projects = lazy(() => import('./pages/Projects'));
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('sington_admin_token');
@@ -23,8 +29,14 @@ function App() {
       }>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/services" element={<Services />} />
           <Route path="/services/:id" element={<ServiceDetail />} />
+          <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
+          <Route path="/career" element={<Career />} />
+          <Route path="/career/:id" element={<CareerDetail />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="/sington-cms-portal" element={<AdminLogin />} />
           <Route
             path="/sington-cms-portal/dashboard"

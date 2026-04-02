@@ -1,6 +1,6 @@
 import { useRef } from 'react';
-// eslint-disable-next-line no-unused-vars
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { API_URL } from '../config';
 
 export default function About({ data }) {
   const { sectionTitle, heading, body, ctaLabel, ctaLink } = data;
@@ -66,7 +66,7 @@ export default function About({ data }) {
             <div className="absolute inset-0 bg-primary/20 dark:bg-primary/30 blur-[40px] rounded-full scale-90 -z-10" />
             
             <img
-              src={data.image?.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${data.image}` : (data.image || '/images/m.jpg')}
+              src={data.image?.startsWith('/uploads') ? `${API_URL}${data.image}` : (data.image || '/images/m.jpg')}
               alt="About Sington Engineering"
               className="w-full max-w-md rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] dark:shadow-[0_15px_40px_rgba(247,147,30,0.3)] object-cover"
               loading="lazy"

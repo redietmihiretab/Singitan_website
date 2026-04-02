@@ -1,10 +1,11 @@
 import { useRef } from 'react';
 import { Phone, Mail, MapPin } from 'lucide-react';
-// eslint-disable-next-line no-unused-vars
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../config';
 
 export default function Footer({ data }) {
+  data = data || {};
   const targetRef = useRef(null);
   
   const { scrollYProgress } = useScroll({
@@ -16,14 +17,15 @@ export default function Footer({ data }) {
 
   const footerY = useTransform(smoothProgress, [0, 1], [150, 0]);
   const footerOpacity = useTransform(smoothProgress, [0, 1], [0, 1]);
-  const { phone1, phone2, email, address, linkedin, facebook, instagram, twitter, mapEmbed } = data.contact || {};
+  const { phone1, phone2, email, address, mapEmbed } = data.contact || {};
+  const socialLinks = data.socialLinks || [];
 
-  const socials = [
-    { href: linkedin, src: '/images/Asset 1.svg', alt: 'LinkedIn' },
-    { href: facebook, src: '/images/Asset 2.png', alt: 'Facebook' },
-    { href: instagram, src: '/images/Asset 3.png', alt: 'Instagram' },
-    { href: twitter, src: '/images/Asset 4.png', alt: 'Twitter' },
-  ];
+  const getImgUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('/uploads')) return `${API_URL}${path}`;
+    if (path.startsWith('http')) return path;
+    return path;
+  };
 
   return (
     <footer ref={targetRef} id="footer" className="bg-white dark:bg-black text-black dark:text-white border-t border-gray-100 dark:border-secondary overflow-hidden transition-colors duration-500">
@@ -57,31 +59,34 @@ export default function Footer({ data }) {
           <div className="flex-1">
             <h3 className="text-xl font-semibold text-secondary mb-5">Follow Us</h3>
             <div className="flex gap-5 flex-wrap">
-              {socials.map(s => (
+              {socialLinks.map(s => (
                 <a
-                  key={s.alt}
-                  href={s.href}
+                  key={s.id}
+                  href={s.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={s.alt}
+                  aria-label={s.name}
                   className="hover:opacity-70 hover:scale-110 transition-all duration-200"
                 >
-                  <img src={s.src} alt={s.alt} className="w-7 h-7 object-contain" />
+                  <img src={getImgUrl(s.icon)} alt={s.name} className="w-8 h-8 object-contain" />
                 </a>
               ))}
+              {socialLinks.length === 0 && (
+                <div className="text-xs opacity-30 italic">Connect with us online</div>
+              )}
             </div>
 
             {/* Logo */}
             <Link to="/" className="mt-8 inline-block transition-opacity hover:opacity-80">
               {/* Light logo for light theme */}
               <img
-                src={data.logos?.dark?.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${data.logos.dark}` : (data.logos?.dark || "/images/logo_horizontal.svg")}
+                src={data.logos?.dark?.startsWith('/uploads') ? `${API_URL}${data.logos.dark}` : (data.logos?.dark || "/images/logo_horizontal.svg")}
                 alt="Sington Engineering"
                 className="h-10 w-auto opacity-80 dark:hidden"
               />
               {/* Optional: use light version on dark background */}
               <img
-                src={data.logos?.light?.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${data.logos.light}` : (data.logos?.light || "/images/logo_horizontal_light.svg")}
+                src={data.logos?.light?.startsWith('/uploads') ? `${API_URL}${data.logos.light}` : (data.logos?.light || "/images/logo_horizontal_light.svg")}
                 alt="Sington Engineering"
                 className="h-10 w-auto opacity-90 hidden dark:inline-block"
               />

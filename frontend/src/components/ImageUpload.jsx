@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { Upload, X, Loader2, Image as ImageIcon } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_URL } from '../config';
 
 export default function ImageUpload({ value, onChange, label }) {
   const [uploading, setUploading] = useState(false);

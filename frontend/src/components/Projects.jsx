@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-// eslint-disable-next-line no-unused-vars
 import { motion, useScroll, useTransform, useInView, useSpring } from 'framer-motion';
+import { API_URL } from '../config';
 
 function StatCounter({ value, label }) {
   const ref = useRef(null);
@@ -55,7 +55,7 @@ function ProjectCard({ project, index, scrollYProgress }) {
         </div>
         {project.image ? (
           <img
-            src={project.image?.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${project.image}` : project.image}
+            src={project.image?.startsWith('/uploads') ? `${API_URL}${project.image}` : project.image}
             alt={project.title}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
@@ -68,16 +68,7 @@ function ProjectCard({ project, index, scrollYProgress }) {
       <div className="p-6 flex flex-col flex-grow">
         <h3 className="text-xl font-semibold text-primary mb-2">{project.title}</h3>
         <p className="text-black/75 dark:text-fontwhite/80 text-sm mb-4 transition-colors duration-500 line-clamp-2">{project.description}</p>
-        <div className="flex flex-wrap gap-2 mt-auto">
-          {project.tags.map(tag => (
-            <span
-              key={tag}
-              className="bg-primary/10 text-primary text-xs font-medium px-3 py-1 rounded-full"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+        <p className="text-black/75 dark:text-fontwhite/80 text-sm mb-4 transition-colors duration-500 line-clamp-2">{project.description}</p>
         <Link to={`/projects/${project.id}`} className="mt-3 text-primary/70 font-regular hover:text-secondary inline-flex items-center gap-1 group/link transition-colors no-underline">
           Read Details
           <span className="transform group-hover/link:translate-x-1 transition-transform">→</span>

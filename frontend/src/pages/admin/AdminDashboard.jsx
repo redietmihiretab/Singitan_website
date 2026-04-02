@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { LogOut, Save, LayoutDashboard, Loader2, Sun, Moon, X, Eye, EyeOff, Bell, CheckCircle, Check, Inbox, Image as ImageIcon, Home, Info, Briefcase, BarChart3, FolderGit2, MessageSquare, Link as LinkIcon, Users } from 'lucide-react';
+import { LogOut, Save, LayoutDashboard, Loader2, Sun, Moon, X, Eye, EyeOff, Bell, CheckCircle, Check, Inbox, Image as ImageIcon, Home, Info, Briefcase, BarChart3, FolderGit2, MessageSquare, Link as LinkIcon, Users, Cpu, MapPin, Clock, Calendar, Menu, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../context/ThemeContext';
 import ImageUpload from '../../components/ImageUpload';
+import AdminBlogs from './AdminBlogs';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_URL } from '../../config';
 
 export default function AdminDashboard() {
   const [data, setData] = useState(null);
@@ -23,12 +25,18 @@ export default function AdminDashboard() {
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
   const [activeTab, setActiveTab] = useState('logos');
+  const [showMobileDropdown, setShowMobileDropdown] = useState(false);
 
   const navigate = useNavigate();
   const { isDarkMode, toggleTheme } = useTheme();
   const [passFeedback, setPassFeedback] = useState({
     len: false, upper: false, lower: false, num: false, sym: false, match: true
   });
+
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem('sington_admin_token');
+    navigate('/singitan-cms-portal');
+  }, [navigate]);
 
   useEffect(() => {
     const p = credentials.newPassword;
@@ -85,7 +93,7 @@ export default function AdminDashboard() {
     loadData();
   }, [handleLogout]);
 
-const refreshSubmissions = async () => {
+  const refreshSubmissions = async () => {
     setSubmissionsLoading(true);
     setSubmissionsError(null);
     try {
@@ -105,7 +113,6 @@ const refreshSubmissions = async () => {
     }
   };
 
-// Mark submission as handled (non-reversible)
   const handleToggleHandled = async (id) => {
     try {
       const res = await fetch(`${API_URL}/api/contact/submissions/${id}/handle`, {
@@ -133,11 +140,6 @@ const refreshSubmissions = async () => {
       setTimeout(() => setStatus(null), 4000);
     }
   };
-
-  const handleLogout = useCallback(() => {
-    localStorage.removeItem('sington_admin_token');
-    navigate('/singitan-cms-portal');
-  }, [navigate]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -371,6 +373,71 @@ const refreshSubmissions = async () => {
     }));
   };
 
+  const addCareer = () => {
+    setData(prev => ({
+      ...prev,
+      careers: [...(prev.careers || []), { 
+        id: Date.now(), 
+        title: 'New Position', 
+        department: 'Engineering', 
+        location: 'Addis Ababa', 
+        type: 'Full-time', 
+        description: 'Job description...', 
+        requirements: ['Requirement 1'], 
+        is_active: true 
+      }]
+    }));
+  };
+
+  const addCareerRequirement = (careerIdx) => {
+    setData(prev => {
+      const careers = [...prev.careers];
+      careers[careerIdx] = { ...careers[careerIdx], requirements: [...(careers[careerIdx].requirements || []), ''] };
+      return { ...prev, careers };
+    });
+  };
+
+  const updateCareerRequirement = (careerIdx, reqIdx, value) => {
+    setData(prev => {
+      const careers = [...prev.careers];
+      const requirements = [...careers[careerIdx].requirements];
+      requirements[reqIdx] = value;
+      careers[careerIdx] = { ...careers[careerIdx], requirements };
+      return { ...prev, careers };
+    });
+  };
+
+  const removeCareerRequirement = (careerIdx, reqIdx) => {
+    setData(prev => {
+      const careers = [...prev.careers];
+      const requirements = careers[careerIdx].requirements.filter((_, i) => i !== reqIdx);
+      careers[careerIdx] = { ...careers[careerIdx], requirements };
+      return { ...prev, careers };
+    });
+  };
+
+  const addSocialLink = () => {
+    setData(prev => ({
+      ...prev,
+      socialLinks: [...(prev.socialLinks || []), { id: Date.now(), name: 'LinkedIn', url: '', icon: '' }]
+    }));
+  };
+
+  const updateSocialLink = (idx, field, value) => {
+    setData(prev => {
+      const socialLinks = [...(prev.socialLinks || [])];
+      socialLinks[idx] = { ...socialLinks[idx], [field]: value };
+      return { ...prev, socialLinks };
+    });
+  };
+
+  const removeSocialLink = (idx) => {
+    setData(prev => ({
+      ...prev,
+      socialLinks: (prev.socialLinks || []).filter((_, i) => i !== idx)
+    }));
+  };
+
   // Handle generic tag comma separation array for projects
   const updateTags = (index, value) => {
     const tagsArray = value.split(',').map(t => t.trim()).filter(Boolean);
@@ -381,13 +448,15 @@ const refreshSubmissions = async () => {
     { id: 'logos', label: 'Site Logos', icon: ImageIcon },
     { id: 'hero', label: 'Hero Section', icon: Home },
     { id: 'about', label: 'About Section', icon: Info },
-    { id: 'services', label: 'Services', icon: Briefcase },
+    { id: 'services', label: 'Services', icon: Cpu },
     { id: 'stats', label: 'Company Stats', icon: BarChart3 },
     { id: 'projects', label: 'Projects', icon: FolderGit2 },
+    { id: 'blogs', label: 'Blogs', icon: MessageSquare },
+    { id: 'careers', label: 'Careers', icon: Briefcase },
     { id: 'testimonials', label: 'Testimonials', icon: MessageSquare },
+    { id: 'partners', label: 'Partners', icon: Users },
     { id: 'cta', label: 'Call to Action', icon: LinkIcon },
     { id: 'contact', label: 'Contact/Footer', icon: LayoutDashboard },
-    { id: 'partners', label: 'Partners', icon: Users },
   ];
 
   if (loading) return (
@@ -410,17 +479,9 @@ const refreshSubmissions = async () => {
             <div className="h-6 w-px bg-gray-200 dark:bg-white/20 mx-2" />
             <h1 className="text-lg font-bold text-dark dark:text-fontwhite hidden sm:block">Content Management Portal</h1>
           </Link>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={handleSave} disabled={saving}
-              className="px-5 py-2 bg-primary text-white rounded-lg hover:bg-secondary
-                         transition-colors flex items-center gap-2 font-medium disabled:opacity-70"
-            >
-              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              Save
-            </button>
-
-{/* Notifications - Opens Inbox */}
+          
+          <div className="flex items-center gap-2 sm:gap-4 ml-auto">
+            {/* Notifications - Opens Inbox */}
             <div className="relative">
               <button
                 type="button"
@@ -487,6 +548,17 @@ const refreshSubmissions = async () => {
                 </div>
               )}
             </div>
+
+            {/* Save Button - Most right on mobile */}
+            <button
+              onClick={handleSave} disabled={saving}
+              className="px-4 py-2 sm:px-5 sm:py-2.5 bg-primary text-white rounded-lg hover:bg-secondary
+                         transition-colors flex items-center gap-2 font-bold shadow-md shadow-primary/20 
+                         disabled:opacity-70 text-sm md:text-base border-none outline-none"
+            >
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              Save
+            </button>
           </div>
         </div>
       </header>
@@ -501,8 +573,8 @@ const refreshSubmissions = async () => {
 
       {/* Editor Content */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pt-8 flex flex-col lg:flex-row gap-8 items-start">
-        {/* Sidebar Tabs */}
-        <aside className="w-full lg:w-64 flex-shrink-0 lg:sticky lg:top-24 bg-white dark:bg-white/5 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-white/10 transition-colors duration-500 overflow-x-auto lg:overflow-visible flex lg:flex-col gap-2 scrollbar-hide">
+        {/* Sidebar Tabs - Desktop */}
+        <aside className="hidden lg:flex w-64 flex-shrink-0 sticky top-24 bg-white dark:bg-white/5 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-white/10 transition-colors duration-500 flex-col gap-2">
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -525,6 +597,83 @@ const refreshSubmissions = async () => {
 
         {/* Dynamic Content Area */}
         <main className="flex-1 w-full space-y-8 min-w-0 pb-12">
+          {/* Mobile Dropdown Selector */}
+          <div className="lg:hidden mb-10 relative">
+            <p className="text-[10px] font-bold text-gray-400 dark:text-white/40 mb-2 uppercase tracking-[0.2em] ml-1">
+              Select Dashboard Section
+            </p>
+            
+            <button
+              onClick={() => setShowMobileDropdown(!showMobileDropdown)}
+              className="w-full flex items-center justify-between p-4 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl transition-all duration-300 group hover:border-primary/30"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                  {(() => {
+                    const activeTabInfo = TABS.find(t => t.id === activeTab);
+                    const Icon = activeTabInfo?.icon || LayoutDashboard;
+                    return <Icon size={20} />;
+                  })()}
+                </div>
+                <div className="text-left">
+                  <span className="block text-sm font-bold text-dark dark:text-fontwhite leading-none mb-1">
+                    {TABS.find(t => t.id === activeTab)?.label}
+                  </span>
+                  <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold opacity-70">Active Section</span>
+                </div>
+              </div>
+              <div className={`transition-transform duration-300 ${showMobileDropdown ? 'rotate-180' : ''}`}>
+                <ChevronDown size={20} className="text-gray-400" />
+              </div>
+            </button>
+
+            <AnimatePresence>
+              {showMobileDropdown && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setShowMobileDropdown(false)}
+                    className="fixed inset-0 z-[60] bg-black/20 backdrop-blur-[2px]"
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute top-full left-0 right-0 mt-3 z-[70] bg-white dark:bg-[#0a0a0a] border border-gray-100 dark:border-white/10 rounded-2xl overflow-hidden p-2"
+                  >
+                    <div className="max-h-[60vh] overflow-y-auto scrollbar-hide py-1 space-y-1">
+                      {TABS.map((tab) => {
+                        const Icon = tab.icon;
+                        const isActive = activeTab === tab.id;
+                        return (
+                          <button
+                            key={tab.id}
+                            onClick={() => {
+                              setActiveTab(tab.id);
+                              setShowMobileDropdown(false);
+                            }}
+                            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all duration-200 ${
+                              isActive
+                                ? 'bg-primary text-white shadow-sm shadow-primary/25'
+                                : 'text-gray-600 dark:text-white/70 hover:bg-gray-50 dark:hover:bg-white/5'
+                            }`}
+                          >
+                            <div className={`shrink-0 ${isActive ? 'text-white' : 'text-primary'}`}>
+                              <Icon size={18} />
+                            </div>
+                            {tab.label}
+                            {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
           
           {activeTab === 'logos' && (
             <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-colors duration-500 animate-in fade-in slide-in-from-bottom-4 duration-300">
@@ -828,6 +977,98 @@ const refreshSubmissions = async () => {
             </section>
           )}
 
+          {activeTab === 'blogs' && (
+            <AdminBlogs handleLogout={handleLogout} />
+          )}
+
+          {activeTab === 'careers' && (
+            <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 duration-300">
+              <div className="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-white/10 pb-2">
+                <h2 className="text-lg font-semibold text-secondary dark:text-primary">Careers</h2>
+                <button onClick={addCareer} className="text-sm bg-primary/5 hover:bg-primary/10 text-dark dark:text-fontwhite px-3 py-1.5 rounded-md font-medium transition-colors">
+                  + Add Position
+                </button>
+              </div>
+              <div className="space-y-12">
+                {(data.careers || []).map((job, idx) => (
+                  <div key={job.id} className="p-6 border border-gray-200 dark:border-white/10 rounded-2xl relative bg-white dark:bg-white/5 transition-colors duration-500 shadow-sm">
+                    <div className="absolute top-4 right-4 flex items-center gap-4">
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Active</label>
+                        <button 
+                          onClick={() => updateArrayItem('careers', idx, 'is_active', !job.is_active)}
+                          className={`w-10 h-5 rounded-full relative transition-colors ${job.is_active ? 'bg-primary' : 'bg-gray-200 dark:bg-white/10'}`}
+                        >
+                          <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${job.is_active ? 'right-1' : 'left-1'}`} />
+                        </button>
+                      </div>
+                      <button
+                        onClick={() => removeArrayItem('careers', idx)}
+                        className="text-red-500 hover:text-red-700 font-semibold text-sm p-2"
+                      >Remove</button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 gap-6 mt-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Job Title</label>
+                          <input type="text" value={job.title} onChange={e => updateArrayItem('careers', idx, 'title', e.target.value)}
+                            className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Department</label>
+                          <input type="text" value={job.department} onChange={e => updateArrayItem('careers', idx, 'department', e.target.value)}
+                            className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Location</label>
+                          <input type="text" value={job.location} onChange={e => updateArrayItem('careers', idx, 'location', e.target.value)}
+                            className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Job Type (e.g. Full-time)</label>
+                          <input type="text" value={job.type} onChange={e => updateArrayItem('careers', idx, 'type', e.target.value)}
+                            className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Job Description</label>
+                        <textarea value={job.description} onChange={e => updateArrayItem('careers', idx, 'description', e.target.value)} rows={4}
+                          className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-sm text-dark dark:text-fontwhite transition-colors duration-500" />
+                      </div>
+
+                      <div className="border-t border-gray-100 dark:border-white/10 pt-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-md font-semibold text-secondary dark:text-primary">Requirements</h3>
+                          <button onClick={() => addCareerRequirement(idx)} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded hover:bg-primary/20 transition-colors">
+                            + Add Requirement
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {(job.requirements || []).map((req, rIdx) => (
+                            <div key={rIdx} className="flex gap-2">
+                              <input 
+                                type="text" 
+                                value={req} 
+                                onChange={e => updateCareerRequirement(idx, rIdx, e.target.value)}
+                                className="flex-1 p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded outline-none focus:border-primary text-xs text-dark dark:text-fontwhite transition-colors duration-500"
+                              />
+                              <button onClick={() => removeCareerRequirement(idx, rIdx)} className="text-red-400 hover:text-red-600 px-1">✕</button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
           {activeTab === 'testimonials' && (
             <section className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 duration-300">
               <div className="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-white/10 pb-2">
@@ -919,6 +1160,60 @@ const refreshSubmissions = async () => {
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address</label>
                   <input type="text" value={data.contact.address} onChange={e => updateField('contact', 'address', e.target.value)}
                     className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-dark dark:text-fontwhite transition-colors duration-500 outline-none focus:border-primary" />
+                </div>
+                
+                <div className="md:col-span-2 border-t border-gray-100 dark:border-white/10 pt-6 mt-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-md font-semibold text-secondary dark:text-primary">Social Media Management</h3>
+                    <button onClick={addSocialLink} className="text-sm bg-primary/10 text-primary px-3 py-1.5 rounded-md font-medium hover:bg-primary/20 transition-colors">
+                      + Add Social Link
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-6">
+                    {(data.socialLinks || []).map((social, idx) => (
+                      <div key={social.id} className="p-4 border border-gray-200 dark:border-white/10 rounded-xl relative bg-white dark:bg-black/10 transition-colors duration-500">
+                        <button
+                          onClick={() => removeSocialLink(idx)}
+                          className="absolute top-4 right-4 text-red-500 hover:text-red-700 font-semibold text-xs"
+                        >Remove</button>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Platform Name (e.g. LinkedIn)</label>
+                            <input 
+                              type="text" 
+                              value={social.name} 
+                              onChange={e => updateSocialLink(idx, 'name', e.target.value)}
+                              className="w-full p-2.5 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-sm transition-all" 
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Social URL</label>
+                            <input 
+                              type="text" 
+                              value={social.url} 
+                              onChange={e => updateSocialLink(idx, 'url', e.target.value)}
+                              className="w-full p-2.5 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-sm transition-all" 
+                            />
+                          </div>
+                          <div className="md:col-span-2">
+                            <ImageUpload
+                              label="Platform Icon (Upload Image)"
+                              value={social.icon}
+                              onChange={val => updateSocialLink(idx, 'icon', val)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    
+                    {(!data.socialLinks || data.socialLinks.length === 0) && (
+                      <div className="text-center py-6 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-2xl">
+                        <p className="text-sm text-gray-400">No social media links added yet.</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </section>

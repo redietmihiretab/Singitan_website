@@ -1,7 +1,7 @@
-// eslint-disable-next-line no-unused-vars
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { TypeAnimation } from 'react-type-animation';
 import { ChevronDown } from 'lucide-react';
+import { API_URL } from '../config';
 
 export default function Hero({ data }) {
   const { headline, headlineHighlight, subtext, ctaLabel, ctaLink } = data;
@@ -98,7 +98,7 @@ export default function Hero({ data }) {
             {/* Soft Neon Glow Behind Image */}
             <div className="absolute inset-0  blur-[60px]  scale-75 -z-10 animate-neon-pulse" />
             <img
-              src={data.image?.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${data.image}` : (data.image || '/images/hero.png')}
+              src={data.image?.startsWith('/uploads') ? `${API_URL}${data.image}` : (data.image || '/images/hero.png')}
               alt="Singitan Engineering"
               className="w-full max-w-sm md:max-w-md "
               loading="eager"

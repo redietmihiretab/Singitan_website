@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_URL } from '../config';
 
 const getImgUrl = (path) => {
   if (!path) return null;
@@ -97,39 +97,33 @@ export default function ProjectDetail() {
             </div>
           )}
 
-          <div className="flex flex-wrap gap-2 mb-6">
-            {project.tags?.map((tag, i) => (
-              <span key={i} className="px-3 py-1 bg-primary/10 text-primary text-sm font-semibold rounded-full border border-primary/20">
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          <h1 className="text-4xl md:text-6xl font-bold text-black dark:text-white mb-8 border-b-4 border-primary pb-4 inline-block">
+          <h1 className="text-3xl md:text-5xl font-bold text-black dark:text-white mb-10 border-b-4 border-primary pb-6 inline-block">
             {project.title}
           </h1>
 
-          <div className="space-y-8 text-black/80 dark:text-fontwhite/90 text-lg leading-relaxed text-justify">
+          <div className="space-y-8 text-black/80 dark:text-fontwhite/90 text-base md:text-lg leading-relaxed text-justify font-light">
             {(project.paragraphs || []).map((p, i) => (
-              <p key={i} className={i === 0 ? "text-xl font-medium text-black dark:text-white" : ""}>
+              <p key={i}>
                 {p}
               </p>
             ))}
 
             {project.bullets && project.bullets.length > 0 && (
               <>
-                <h3 className="text-3xl font-semibold text-secondary dark:text-primary mt-12 mb-6 pt-4 border-t border-gray-100 dark:border-white/5">
+                <h3 className="text-2xl font-bold text-secondary dark:text-primary mt-12 mb-6 pt-4 border-t border-gray-100 dark:border-white/5">
                   Project Highlights
                 </h3>
 
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
+                <div className="flex flex-wrap gap-4">
                   {project.bullets.map((bullet, i) => (
-                    <li key={i} className="flex items-start gap-3 bg-gray-50 dark:bg-white/5 p-5 rounded-2xl border border-gray-100 dark:border-white/10 shadow-sm hover:border-primary/50 transition-colors duration-300">
-                      <CheckCircle2 className="text-primary flex-shrink-0 mt-1" size={22} />
-                      <span className="text-base text-black/90 dark:text-fontwhite">{bullet}</span>
-                    </li>
+                    <div key={i} className="flex items-center gap-3 bg-primary/5 dark:bg-primary/10 px-6 py-3 rounded-full transition-all duration-300">
+                      <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                        <CheckCircle2 className="text-primary" size={12} />
+                      </div>
+                      <span className="text-sm md:text-base text-gray-600 dark:text-gray-400 font-light whitespace-nowrap">{bullet}</span>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </>
             )}
 

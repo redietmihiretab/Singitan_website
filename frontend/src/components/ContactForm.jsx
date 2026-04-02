@@ -3,7 +3,7 @@ import { User, Mail, MessageSquare } from 'lucide-react';
 // eslint-disable-next-line no-unused-vars
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_URL } from '../config';
 
 const NAME_REGEX = /^[a-zA-Z\s\-']{3,50}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -8,7 +8,7 @@ router.get('/:filename', async (req, res) => {
     const { filename } = req.params;
 
     const result = await db.query(
-      'SELECT mimetype, image_data FROM uploaded_images WHERE filename = $1',
+      'SELECT mimetype, image_data FROM uploaded_images WHERE filename = ?',
       [filename]
     );
 

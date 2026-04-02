@@ -37,9 +37,9 @@ router.post('/', upload.single('image'), async (req, res) => {
       .webp({ quality: 80 })
       .toBuffer();
 
-    // Store in PostgreSQL database
+    // Store in MySQL database
     await db.query(
-      'INSERT INTO uploaded_images (filename, mimetype, image_data) VALUES ($1, $2, $3)',
+      'INSERT INTO uploaded_images (filename, mimetype, image_data) VALUES (?, ?, ?)',
       [filename, mimetype, webpBuffer]
     );
 

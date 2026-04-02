@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-// eslint-disable-next-line no-unused-vars
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { API_URL } from '../config';
 
 function ServiceCard({ service }) {
   return (
@@ -11,7 +11,7 @@ function ServiceCard({ service }) {
           <img
             src={
               service.image?.startsWith('/uploads')
-                ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${service.image}`
+                ? `${API_URL}${service.image}`
                 : service.image
             }
             alt={service.title}
@@ -26,12 +26,12 @@ function ServiceCard({ service }) {
           </div>
         )}
       </div>
-      <div className="p-5">
+      <div className="p-5 flex flex-col flex-grow">
         <h3 className="text-xl font-semibold text-secondary leading-snug mb-3">{service.title}</h3>
         <p className="text-black/75 dark:text-fontwhite/80 text-[13px] text-justify mb-4 leading-relaxed transition-colors duration-500">{service.description}</p>
         <a
           href={`/services/${service.id}`}
-          className="inline-block px-5 py-2 bg-primary text-white font-semibold
+          className="w-fit px-5 py-2 bg-primary text-white font-semibold mt-auto
                      rounded-lg text-sm hover:bg-secondary transition-colors duration-200 no-underline"
         >
           Learn More

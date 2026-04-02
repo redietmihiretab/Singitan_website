@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Menu, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { API_URL } from '../config';
 
 const navLinks = [
   { label: 'HOME', href: '/#home' },
   { label: 'ABOUT', href: '/#about' },
-  { label: 'SERVICES', href: '/#services' },
-  { label: 'PROJECTS', href: '/#projects' },
+  { label: 'SERVICES', href: '/services' },
+  { label: 'PROJECTS', href: '/projects' },
+  { label: 'BLOG', href: '/blog' },
+  { label: 'CAREER', href: '/career' },
 ];
 
 export default function Header({ logos }) {
@@ -50,8 +52,8 @@ export default function Header({ logos }) {
           <Link to="/" className="z-[101] flex-shrink-0">
             <img 
               src={isDarkMode 
-                ? (logos?.light?.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${logos.light}` : (logos?.light || "/images/logo_horizontal_light.svg"))
-                : (logos?.dark?.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${logos.dark}` : (logos?.dark || "/images/logo_horizontal.svg"))
+                ? (logos?.light?.startsWith('/uploads') ? `${API_URL}${logos.light}` : (logos?.light || "/images/logo_horizontal_light.svg"))
+                : (logos?.dark?.startsWith('/uploads') ? `${API_URL}${logos.dark}` : (logos?.dark || "/images/logo_horizontal.svg"))
               } 
               alt="Singitan Engineering" 
               className="h-10 w-auto" 
@@ -61,20 +63,29 @@ export default function Header({ logos }) {
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
             <ul className="flex gap-8 list-none m-0 p-0">
-              {navLinks.map(({ label, href }) => (
-                <li key={label}>
-                  <a
-                    href={href}
-                    onClick={() => handleNavClick(href)}
-                    className="relative text-black dark:text-fontwhite font-medium text-[15px] tracking-wide transition-colors
-                               duration-200 hover:text-secondary dark:hover:text-primary group no-underline"
-                  >
-                    {label}
-                    <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-secondary
-                                     transition-all duration-300 group-hover:w-full rounded" />
-                  </a>
-                </li>
-              ))}
+              {navLinks.map(({ label, href }) => {
+                const isActive = href.startsWith('/#') 
+                  ? (location.hash === href.replace('/', '') || (location.pathname === '/' && !location.hash && href === '/#home'))
+                  : (location.pathname === href || location.pathname.startsWith(href + '/'));
+
+                return (
+                  <li key={label}>
+                    <a
+                      href={href}
+                      onClick={() => handleNavClick(href)}
+                      className={`relative font-medium text-[15px] tracking-wide transition-colors duration-200 group no-underline
+                        ${isActive 
+                          ? 'text-secondary dark:text-primary' 
+                          : 'text-black dark:text-fontwhite hover:text-secondary dark:hover:text-primary'
+                        }`}
+                    >
+                      {label}
+                      <span className={`absolute -bottom-1 left-0 h-0.5 bg-secondary transition-all duration-300 rounded
+                        ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
 
             <a

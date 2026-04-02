@@ -1,6 +1,6 @@
 import { useRef } from 'react';
-// eslint-disable-next-line no-unused-vars
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { API_URL } from '../config';
 
 function TestimonialCard({ t, i, scrollYProgress }) {
   const cardY = useTransform(scrollYProgress, [0, 1], [150 + (i * 50), 0]);
@@ -16,7 +16,7 @@ function TestimonialCard({ t, i, scrollYProgress }) {
         <img
           src={
             t.photo?.startsWith('/uploads')
-              ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${t.photo}`
+              ? `${API_URL}${t.photo}`
               : t.photo
           }
           alt={t.name}

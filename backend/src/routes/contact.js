@@ -60,7 +60,7 @@ router.put('/submissions/:id/handle', verifyToken, async (req, res) => {
     const { id } = req.params;
     
     // Check if already handled
-    const existingResult = await db.query('SELECT is_handled FROM form_message WHERE id = $1', [id]);
+    const existingResult = await db.query('SELECT is_handled FROM form_message WHERE id = ?', [id]);
     const existing = existingResult.rows[0];
     
     if (!existing) {
@@ -74,7 +74,7 @@ router.put('/submissions/:id/handle', verifyToken, async (req, res) => {
     
     const handledAt = new Date().toISOString();
     
-    const result = await db.query('UPDATE form_message SET is_handled = 1, handled_at = $1 WHERE id = $2', [handledAt, id]);
+    const result = await db.query('UPDATE form_message SET is_handled = 1, handled_at = ? WHERE id = ?', [handledAt, id]);
     
     if (result.rowCount === 0) {
       return res.status(404).json({ success: false, message: 'Submission not found.' });
@@ -95,7 +95,7 @@ router.post('/', contactLimiter, async (req, res) => {
 
   try {
     // 1. Save to Database first
-    await db.query('INSERT INTO form_message (name, email, message) VALUES ($1, $2, $3)', [name.trim(), email.trim(), message.trim()]);
+    await db.query('INSERT INTO form_message (name, email, message) VALUES (?, ?, ?)', [name.trim(), email.trim(), message.trim()]);
 
     // 2. Send response immediately (before sending emails)
     res.json({ success: true, message: "Success! Your message was saved and we'll be in touch." });

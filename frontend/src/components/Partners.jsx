@@ -1,6 +1,6 @@
 import { useRef } from 'react';
-// eslint-disable-next-line no-unused-vars
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { API_URL } from '../config';
 export default function Partners({ data }) {
   const targetRef = useRef(null);
 
@@ -43,7 +43,7 @@ export default function Partners({ data }) {
               <img
                 src={
                   partner.logo?.startsWith('/uploads')
-                    ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${partner.logo}`
+                    ? `${API_URL}${partner.logo}`
                     : partner.logo
                 }
                 alt={partner.name}
