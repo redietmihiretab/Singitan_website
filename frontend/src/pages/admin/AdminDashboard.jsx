@@ -713,8 +713,7 @@ export default function AdminDashboard() {
                     className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg outline-none focus:border-primary text-dark dark:text-fontwhite transition-colors duration-500" />
                 </div>
                 <ImageUpload
-                  label="Hero Image"
-                  value={data.hero.image || '/images/hero.png'}
+                  value={data.hero.image || '/images/hero.webp'}
                   onChange={val => updateField('hero', 'image', val)}
                 />
               </div>
@@ -737,7 +736,7 @@ export default function AdminDashboard() {
                 </div>
                 <ImageUpload
                   label="About Image"
-                  value={data.about.image || '/images/m.jpg'}
+                  value={data.about.image || '/images/m.webp'}
                   onChange={val => updateField('about', 'image', val)}
                 />
               </div>

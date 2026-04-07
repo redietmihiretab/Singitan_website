@@ -132,17 +132,17 @@ export default function BlogDetail() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-12 py-8 border-y border-gray-100 dark:border-white/5">
                 {blog.image_1 && (
                   <div className="aspect-video rounded-2xl overflow-hidden shadow-md border border-gray-100 dark:border-white/10 font-light">
-                    <img src={getImgUrl(blog.image_1)} alt="" className="w-full h-full object-cover" />
+                    <img src={getImgUrl(blog.image_1)} alt="" className="w-full h-full object-cover" loading="lazy" />
                   </div>
                 )}
                 {blog.image_2 && (
                   <div className="aspect-video rounded-2xl overflow-hidden shadow-md border border-gray-100 dark:border-white/10 font-light">
-                    <img src={getImgUrl(blog.image_2)} alt="" className="w-full h-full object-cover" />
+                    <img src={getImgUrl(blog.image_2)} alt="" className="w-full h-full object-cover" loading="lazy" />
                   </div>
                 )}
                 {blog.image_3 && (
                   <div className="aspect-video rounded-2xl overflow-hidden shadow-md border border-gray-100 dark:border-white/10 font-light">
-                    <img src={getImgUrl(blog.image_3)} alt="" className="w-full h-full object-cover" />
+                    <img src={getImgUrl(blog.image_3)} alt="" className="w-full h-full object-cover" loading="lazy" />
                   </div>
                 )}
               </div>
@@ -175,6 +175,7 @@ export default function BlogDetail() {
                           src={getImgUrl(item.image)} 
                           alt={item.title} 
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          loading="lazy"
                         />
                       ) : (
                         <div className="w-full h-full bg-primary/10 flex items-center justify-center opacity-30">SINGTON</div>

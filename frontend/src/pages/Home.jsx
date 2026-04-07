@@ -47,10 +47,10 @@ const FALLBACK = {
     { id: 3, title: 'E-commerce Platform Scaling', description: 'Zero-downtime peak season scaling.', image: null, tags: ['Cloud', 'Scalability'] },
   ],
   partners: [
-    { id: 1, name: 'Cisco', logo: '/images/cisco.png' },
-    { id: 2, name: 'Ericsson', logo: '/images/eric.png' },
-    { id: 3, name: 'Sophos', logo: '/images/sophos.png' },
-    { id: 4, name: 'ZTE', logo: '/images/zte.png' },
+    { id: 1, name: 'Cisco', logo: '/images/cisco.webp' },
+    { id: 2, name: 'Ericsson', logo: '/images/eric.webp' },
+    { id: 3, name: 'Sophos', logo: '/images/sophos.webp' },
+    { id: 4, name: 'ZTE', logo: '/images/zte.webp' },
   ],
   testimonials: [
     { id: 1, name: 'Jane Smith', position: 'CEO of TechNova', quote: 'Excellent IT solutions that helped our business grow.', photo: null },

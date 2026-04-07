@@ -30,7 +30,7 @@ export default function Hero({ data }) {
     <section
       id="home"
       className="relative min-h-screen flex items-center pt-20 overflow-hidden
-                 bg-[url('/images/backg.jpg')] bg-cover bg-center"
+                 bg-[url('/images/backg.webp')] bg-cover bg-center"
     >
       {/* Overlay - adapts to dark mode - 60% White / 30% Black rule */}
       <div className="absolute inset-0 bg-white/70 dark:bg-black/85 backdrop-blur-[1px] transition-colors duration-500" />
@@ -98,7 +98,7 @@ export default function Hero({ data }) {
             {/* Soft Neon Glow Behind Image */}
             <div className="absolute inset-0  blur-[60px]  scale-75 -z-10 animate-neon-pulse" />
             <img
-              src={data.image?.startsWith('/uploads') ? `${API_URL}${data.image}` : (data.image || '/images/hero.png')}
+              src={data.image?.startsWith('/uploads') ? `${API_URL}${data.image}` : (data.image || '/images/hero.webp')}
               alt="Singitan Engineering"
               className="w-full max-w-sm md:max-w-md "
               loading="eager"

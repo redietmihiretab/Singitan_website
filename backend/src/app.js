@@ -12,6 +12,7 @@ import contentRouter from './routes/content.js';
 import uploadRouter from './routes/upload.js';
 import imagesRouter from './routes/images.js';
 import blogsRouter from './routes/blogs.js';
+import compression from 'compression';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -57,8 +58,14 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Compress all responses
+app.use(compression());
+
+// Serve static files from the public directory with cache
+app.use(express.static(path.join(__dirname, 'public'), {
+  maxAge: '1y',
+  immutable: true
+}));
 
 // Root route for cPanel/Passenger health checks
 app.get('/', (_, res) => {

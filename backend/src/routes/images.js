@@ -18,8 +18,9 @@ router.get('/:filename', async (req, res) => {
 
     const image = result.rows[0];
     
-    // Serve the binary data with the correct content type
+    // Serve the binary data with the correct content type and cache headers
     res.setHeader('Content-Type', image.mimetype);
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
     res.send(image.image_data);
   } catch (error) {
     console.error('Error fetching image:', error);
